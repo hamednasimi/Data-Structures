@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 template <typename T, int ... S>
 class Array
@@ -11,7 +12,7 @@ public:
 	Array(int size)
 	{
 		this->m_size = size;
-		this->m_values = new T[m_size];
+		this->m_values = new T[m_size]{};
 	}
 
 	// Only used when the size is known at compile time and the values are passed in through an array
@@ -19,7 +20,10 @@ public:
 	Array(Args... args)
 	{
 		this->m_size = { S... };
-		this->m_values = new T[m_size]{ args... };
+		if (m_size > 0)
+			this->m_values = new T[m_size]{ args... };
+		else
+			this->m_values = new T[0]{};
 	}
 
 	~Array()
@@ -31,4 +35,6 @@ public:
 	{
 		return m_values[index];
 	}
+
+	int length() { return m_size; };
 };
