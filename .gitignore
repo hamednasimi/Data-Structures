@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /TestRunner/TestRunner.vcxproj
 /TestRunner/TestRunner.vcxproj.filters
 /TestRunner/TestRunner.cpp
+TestRunner/
