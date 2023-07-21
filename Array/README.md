@@ -13,8 +13,7 @@ Usage:
 		std::cout << runtimeArray[i] << std::endl;
 
 	// Compile time usage
-	const int size_{ 5 };
-	Array<int, size_> compileTimeArray {1, 2, 3, 4, 5};
-	for (int i{ 0 }; i < size_; i++)
-		std::cout << compileTimeArray[i] << std::endl;
+	Array<int, 2> compileTimeArray{ 7, 6 };
+	for (int i{ 0 }; i < compileTimeArray.length(); i++)
+	std::cout << compileTimeArray[i] << std::endl;
 ```
