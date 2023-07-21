@@ -1,15 +1,25 @@
 #pragma once
 
-template <typename T>
+template <typename T, int ... S>
 class Array
 {
 private:
-	T* m_values;
+	int m_size{ 0 };
+	T* m_values{ 0 };
 public:
-	template <typename... Args>
-	Array(int size, Args... args)
+	// Runtime compatible
+	Array(int size)
 	{
-		this->m_values = new T[size]{args...};
+		this->m_size = size;
+		this->m_values = new T[m_size];
+	}
+
+	// Only used when the size is known at compile time and the values are passed in through an array
+	template <typename... Args>
+	Array(Args... args)
+	{
+		this->m_size = { S... };
+		this->m_values = new T[m_size]{ args... };
 	}
 
 	~Array()
