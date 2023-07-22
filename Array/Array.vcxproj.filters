@@ -18,9 +18,17 @@
     <ClInclude Include="Array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ManuallyAllocated\MAArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPPArray\CPPArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include="TODO.md" />
+    <None Include="ManuallyAllocated\README.md" />
+    <None Include="CPPArray\README.md" />
   </ItemGroup>
 </Project>

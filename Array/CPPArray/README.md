@@ -1,4 +1,6 @@
-Usage:
+This class is built on top of C++ arrays.
+
+**Usage:**
 
 ```c++
 	// Runtime usage

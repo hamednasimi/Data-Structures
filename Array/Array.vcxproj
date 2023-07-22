@@ -128,8 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="CPPArray\CPPArray.h" />
+    <ClInclude Include="ManuallyAllocated\MAArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CPPArray\README.md" />
+    <None Include="ManuallyAllocated\README.md" />
     <None Include="README.md" />
     <None Include="TODO.md" />
   </ItemGroup>

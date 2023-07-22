@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 template <typename T>
 class Array
@@ -23,7 +22,6 @@ public:
 		this->m_size = size;
 		this->m_values = new T[m_size]{};
 		this->m_type = typeid(*this).name();
-		//std::cout << m_type;
 	}
 
 	// Only used when the size is known at compile time and the values are passed in through an array
@@ -36,7 +34,6 @@ public:
 		else
 			this->m_values = new T[0]{};
 		this->m_type = typeid(*this).name();
-		//std::cout << m_type;
 	}
 
 	~Array()
