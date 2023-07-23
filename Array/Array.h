@@ -35,14 +35,34 @@ public:
 		this->m_type = typeid(*this).name();
 	}
 
+	//~Array()
+	//{
+	//	if (m_values != nullptr)
+	//	{
+	//		for (int i{ 0 }; i < m_size; i++)
+	//		{
+	//			m_values[i].~T();
+	//		}
+	//		delete[] m_values;
+	//		m_values = nullptr;
+	//	}
+	//}
+
 	void resize(int new_size)
 	{
-		if (m_values != nullptr)
+		if (new_size == m_size)
 		{
-			this->m_size = new_size;
-			this->m_values = new T[m_size]{};
-			delete[] m_values;
+			return;
 		}
+		T* new_values = new T[new_size]{};
+		int copy_size = (m_size < new_size) ? m_size : new_size;
+		for (int i = 0; i < copy_size; ++i)
+		{
+			new_values[i] = m_values[i];
+		}
+		delete[] m_values;
+		m_values = new_values;
+		m_size = new_size;
 	}
 
 	int length()
@@ -62,29 +82,6 @@ public:
 		{
 			this->m_values[i] = O(obj);
 		}
-	}
-
-	// Numerical only
-	int sum()
-	{
-		int current_sum{ 0 };
-		for (int i{ 0 }; i < m_size; i++)
-		{
-			current_sum += m_values[i];
-		}
-		this->m_sum = current_sum;
-		return m_sum;
-	}
-
-	int sum_all()
-	{
-		int current_sum{ 0 };
-		for (int i{ 0 }; i < m_size; i++)
-		{
-			current_sum += m_values[i].sum();
-		}
-		this->m_sum = current_sum;
-		return m_sum;
 	}
 
 	T& operator[](unsigned const int index)
