@@ -5,9 +5,10 @@ class Array
 {
 private:
 	int m_size{ 0 };
-	T* m_values{ 0 };
+	T* m_values{ nullptr };
 	int m_sum{ 0 };
 	const char* m_type;
+
 public:
 	// Default constructor
 	Array()
@@ -16,7 +17,6 @@ public:
 		this->m_type = typeid(*this).name();
 	}
 
-	// Runtime compatible
 	Array(int size)
 	{
 		this->m_size = size;
@@ -24,42 +24,25 @@ public:
 		this->m_type = typeid(*this).name();
 	}
 
-	// Only used when the size is known at compile time and the values are passed in through an array
-	template <typename... Args>
-	Array(Args... args)
+	Array(const Array& array)
 	{
-		this->m_size = sizeof...(args);
-		if (m_size > 0)
-			this->m_values = new T[m_size]{ args... };
-		else
-			this->m_values = new T[0]{};
+		this->m_size = array.m_size;
+		this->m_values = new T[m_size]; // allocate new array
+		for (int i = 0; i < m_size; i++)
+		{
+			this->m_values[i] = array.m_values[i]; // copy elements from source array
+		}
 		this->m_type = typeid(*this).name();
-	}
-
-	~Array()
-	{
-		delete[] m_values;
 	}
 
 	void resize(int new_size)
 	{
 		if (m_values != nullptr)
 		{
+			this->m_size = new_size;
+			this->m_values = new T[m_size]{};
 			delete[] m_values;
 		}
-		this->m_size = new_size;
-		this->m_values = new T[m_size]{};
-	}
-
-	T& operator[](unsigned const int index)
-	{
-		return m_values[index];
-	}
-
-	void represent()
-	{
-		std::cout << m_size << std::endl;
-		std::cout << m_type << std::endl;
 	}
 
 	int length()
@@ -73,11 +56,11 @@ public:
 	}
 
 	template<typename O>
-	void populate(O obj)
+	void populate(const O obj)
 	{
 		for (int i{ 0 }; i < m_size; i++)
 		{
-			this->m_values[i] = obj;
+			this->m_values[i] = O(obj);
 		}
 	}
 
@@ -102,5 +85,10 @@ public:
 		}
 		this->m_sum = current_sum;
 		return m_sum;
+	}
+
+	T& operator[](unsigned const int index)
+	{
+		return m_values[index];
 	}
 };

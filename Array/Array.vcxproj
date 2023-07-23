@@ -129,7 +129,6 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="CPPArray\CPPArray.h" />
-    <ClInclude Include="ManuallyAllocated\MAArray.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CPPArray\README.md" />

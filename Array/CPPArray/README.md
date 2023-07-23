@@ -3,6 +3,27 @@ This class is built on top of C++ arrays.
 **Usage:**
 
 ```c++
+	// ND Arrays
+	Array<Array<long double>> a(10);
+	a.populate(Array<long double>(5));
+
+	for (int i{ 0 }; i < a.length(); i++)
+	{
+		for (int j{ 0 }; j < a[0].length(); j++)
+		{
+			a[i][j] = (i + 1) * (j + 1);
+		}
+	}
+
+	for (int i{ 0 }; i < a.length(); i++)
+	{
+		for (int j{ 0 }; j < a[0].length(); j++)
+		{
+			std::cout << a[i][j] << " " << std::flush;
+		}
+		std::cout << std::endl;
+	}
+
 	// Runtime usage
 	int size;
 	std::cin >> size;
@@ -13,29 +34,4 @@ This class is built on top of C++ arrays.
 
 	for (int i{ 0 }; i < size; i++)
 		std::cout << runtimeArray[i] << std::endl;
-
-	// Compile time usage
-	Array<int> compileTimeArray{ 7, 6 };
-	for (int i{ 0 }; i < compileTimeArray.length(); i++)
-	std::cout << compileTimeArray[i] << std::endl;
-
-	// ND arrays
-	Array<Array<int> > arr(6);
-
-	for (int i{ 0 }; i < arr.length(); i++)
-	{
-		arr[i].resize(6);
-		arr[i].populate(0);
-	}
-
-	for (int i{ 0 }; i < arr.length(); i++)
-	{
-		for (int j{ 0 }; j < arr[i].length(); j++)
-		{
-			std::cout << arr[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-	// Works with 2D arrays only for now
-	std::cout << arr.sum_all() << " ";
 ```
