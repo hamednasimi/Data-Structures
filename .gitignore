@@ -366,5 +366,6 @@ FodyWeavers.xsd
 /TestRunner/TestRunner.cpp
 TestRunner/
 Matrix/
+/Matrix/Matrix.h
 /Matrix/Matrix.vcxproj
 /Matrix/Matrix.vcxproj.filters
