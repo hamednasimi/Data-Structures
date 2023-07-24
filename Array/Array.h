@@ -3,13 +3,13 @@
 template <typename T>
 class Array
 {
-private:
+private: // Member variables
 	int m_size{ 0 };
 	T* m_values{ nullptr };
 	int m_sum{ 0 };
 	const char* m_type;
 
-public:
+public: // Methods
 	// Default constructor
 	Array()
 	{

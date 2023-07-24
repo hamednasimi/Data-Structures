@@ -131,10 +131,7 @@
     <ClInclude Include="CPPArray\CPPArray.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CPPArray\README.md" />
-    <None Include="ManuallyAllocated\README.md" />
     <None Include="README.md" />
-    <None Include="TODO.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

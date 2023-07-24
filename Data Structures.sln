@@ -8,6 +8,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestRunner", "TestRunner\TestRunner.vcxproj", "{85B97653-8F10-42D0-B8BA-C0FA561D9E5E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Matrix", "Matrix\Matrix.vcxproj", "{B5443868-47EA-44DE-9381-4313D0D387B3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{69044459-3DFB-4EBE-B06A-49F15CAA3AFE} = {69044459-3DFB-4EBE-B06A-49F15CAA3AFE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

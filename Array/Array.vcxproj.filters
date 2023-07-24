@@ -23,9 +23,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ManuallyAllocated\README.md" />
-    <None Include="CPPArray\README.md" />
     <None Include="README.md" />
-    <None Include="TODO.md" />
   </ItemGroup>
 </Project>
