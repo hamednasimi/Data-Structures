@@ -2,8 +2,7 @@ from Direction import Direction
 def TODO():
     NotImplementedError()
 
-# TODO Add a Vertex class and move the vertex methods to it
-# TODO Add an Edge class and move the vertex methods to it
+# TODO Add a Vertex and an edge class and move the appropriate methods to it.
 # TODO Add @property methods
 
 class Graph:
