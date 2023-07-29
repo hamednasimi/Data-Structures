@@ -370,3 +370,6 @@ Matrix/
 /Matrix/Matrix.vcxproj
 /Matrix/Matrix.vcxproj.filters
 /Matrix/Matrix.h
+Graph/Testing.py
+/Graph/old_graph.py
+/Graph/Testing.ipynb

@@ -4,9 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>27d08a39-9588-42f4-9968-60b936a6edc4</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Graph.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <StartupFile>graph.py</StartupFile>
+    <SearchPath>..\Graph</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Graph</Name>
@@ -21,8 +20,16 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Direction.py" />
-    <Compile Include="Graph.py" />
+    <Compile Include="old_graph.py" />
+    <Compile Include="Testing.py" />
+    <Compile Include="vertex.py" />
+    <Compile Include="edge.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="graph.py" />
+    <Compile Include="__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
