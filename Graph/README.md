@@ -8,11 +8,11 @@ Usage:
     G = Graph()
     # Add vertices and edges manually and save a reference to them
     v1 = G.vertex() # Add an isolated vertex
-    v2 = G.v() 
-    e1 = G.edge(v1, v2) # | e1 = v1.v2 | G.edge(v1, v2)
+    v2 = G.vertex()
+    e1 = G.edge(v1, v2) # | G.edge(v1, v2)
     
 # 2. Initiate the graph using a vertex and edge set / binary relation
-    G = Graph({1, 2, 3, 4}, [(1, 2), (1, 3), (4, 3)])
+    G = Graph([1, 2, 3, 4], [(1, 2), (1, 3), (4, 3)])
     
 # ___
     # Access unreferenced vertices
