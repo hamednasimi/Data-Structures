@@ -14,7 +14,7 @@ Usage:
 # 2. Initiate the graph using a vertex and edge set / binary relation
     G = Graph([1, 2, 3, 4], [(1, 2), (1, 3), (4, 3)])
     
-# ___
+# __
     # Access unreferenced vertices
     G.v(1) # references the vertex object itself so...
     v1 = G.v(1) # is also possible
