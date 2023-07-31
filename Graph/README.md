@@ -20,7 +20,7 @@ Usage:
     v1 = G.v(1) # is also possible
     
     # Accessing unreferenced edges:
-    G.e(1, 2) # references the edge objects connecting vertex 1 and vertex 2 if they exist. returns a tuple of edges
+    G.e(1, 2) # references the edge objects connecting vertex 1 and vertex 2 if they exist. returns a list of edges
     e1 = G.e(v1, v2) # is also possible
 
 ```
