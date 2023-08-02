@@ -5,7 +5,7 @@ class Edge:
     
     # Dunder methods
     
-    def __init__(self, vertices:tuple, weight:int|float=1) -> object:
+    def __init__(self, vertices:tuple, weight:int|float=1) -> None:
         
         from vertex import Vertex
         assert isinstance(vertices, tuple), "Vertices must be provided in a tuple."
@@ -13,11 +13,11 @@ class Edge:
         assert isinstance(vertices[0], Vertex), "Vertex 1 must be an instance if Vertex."
         assert isinstance(vertices[1], Vertex), "Vertex 2 must be an instance if Vertex."
 
-        self.connected_to = sorted(vertices)
+        self.connected_to: tuple = sorted(vertices)
         self._is_directed: bool = False
         vertices[0].add_edge(self)
         vertices[1].add_edge(self)
-        self._weight = weight
+        self._weight: int = weight
             
     def __str__(self) -> str:
         return f"({self.connected_to[0]}, {self.connected_to[1]}, {self._weight})"

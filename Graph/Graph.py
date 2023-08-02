@@ -8,7 +8,7 @@ class Graph:
 
     # Dunder methods
 
-    def __init__(self, vertices: list = None, edges: list = None, auto_update=True) -> object:
+    def __init__(self, vertices: list = None, edges: list = None, auto_update=True) -> None:
 
         if vertices: assert isinstance(vertices, list), "The vertices must be provided in a set."
         if vertices: assert Graph.vertex_set_check(vertices), "The vertex set must consist of integers starting at 0 and incrementing in steps of 1."
@@ -56,7 +56,7 @@ class Graph:
             self._update_adj()
             self._reset_highest_weight_len()
         
-    def __str__(self):
+    def __str__(self) -> str:
         '''The main string representation for str() and print().'''
         self._representation = ""
         for i in range(self._vertex_count):
@@ -67,31 +67,31 @@ class Graph:
             self._representation += ("\n") if i != self._vertex_count - 1 else ""
         return str(self._representation)
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
     
-    def __getitem__(self, index):
+    def __getitem__(self, index) -> list:
         """Returns the vertex with the given index."""
         return self._vertices[index]
         
     # Properties
     
     @property
-    def vertices(self):
+    def vertices(self) -> list:
         return self._vertices
     
     @property
-    def edges(self):
+    def edges(self) -> list:
         return self._edges
     
     @property
-    def adj(self):
+    def adj(self) -> list:
         self._update_adj()
         return self._simple_adjacency_matrix
     
     # Instance methods
     
-    def vertex(self, value=None):
+    def vertex(self, value=None) -> object:
         """
         Creates and returns a new isolated vertex object that is associated with the graph.
         """
@@ -104,7 +104,7 @@ class Graph:
         self._vertex_count += 1
         return new_vertex
     
-    def v(self, index):
+    def v(self, index) -> object:
         """
         Returns the vertex with the index if it exists. Else returns None.
         """
@@ -113,7 +113,7 @@ class Graph:
                 return v
         return None # In case the vertex with the given index is not present
     
-    def remove_vertex(self, vertex:int|object):
+    def remove_vertex(self, vertex:int|object) -> None:
         """
         Deletes the given vertex reference. Removes all the edges that are connected to it as well. \
         Removing a verted does not shift the remaining vertices' index and adding new vertices \
@@ -141,7 +141,7 @@ class Graph:
         else:
             raise KeyError("The given vertex does not exist or is already removed.")
             
-    def edge(self, v1:int|object, v2:int|object, weight:int=1):
+    def edge(self, v1:int|object, v2:int|object, weight:int=1) -> object:
         """Creates and returns an Edge object, connecting the two given vertices."""
         assert isinstance(v1, int) or isinstance(v1, Vertex), "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex), "The vertex arguments must either be vertex indices or vertex objects."
@@ -158,7 +158,7 @@ class Graph:
         self._reset_highest_weight_len()
         return new_edge
     
-    def e(self, v1:int|object, v2:int|object):
+    def e(self, v1:int|object, v2:int|object) -> list:
         """Returns a list of all the edges connecting the two given vertices."""
         assert isinstance(v1, int) or isinstance(v1, Vertex), "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex), "The vertex arguments must either be vertex indices or vertex objects."
@@ -168,7 +168,7 @@ class Graph:
             v2 = self.v(v2)
         return [e for e in self._edges if e not in self._removed_edges and (e.vertices == [v1, v2] or e.vertices == [v2, v1])]
     
-    def remove_edge(self, edge:object):
+    def remove_edge(self, edge:object) -> None:
         """
         Removes the given edge.
         The edge argument must be an Edge instance reference because there might be \
@@ -185,7 +185,7 @@ class Graph:
         self._reset_highest_weight_len()
         del edge
     
-    def _update_adj(self):
+    def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
         self._simple_adjacency_matrix: list = [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         for edge in self._edges:
@@ -195,7 +195,7 @@ class Graph:
                 self._simple_adjacency_matrix[i1][i2] += edge.weight
             self._simple_adjacency_matrix[i2][i1] += edge.weight
         
-    def _reset_highest_weight_len(self):
+    def _reset_highest_weight_len(self) -> None:
         """Resets the highest weight length for the string representation of the adjacency matrix."""
         self._highest_weight_len = 1
         for row in self._simple_adjacency_matrix:
@@ -204,7 +204,7 @@ class Graph:
                 if l > self._highest_weight_len:
                     self._highest_weight_len = l
     
-    def update(self, all_:bool=False):
+    def update(self, all_:bool=False) -> None:
         '''
         Updates graph attributes.
         By default it updates the primary attributes only. To update all (including self.is_wheel()), use all_=True.
@@ -214,7 +214,7 @@ class Graph:
     # Class / static methods
 
     @staticmethod
-    def vertex_set_check(a:set):
+    def vertex_set_check(a:set) -> bool:
         """Returns True if the given set starts at 0 and is ascending by 1. Else returns False."""
         if a[0] != 0:
             return False
