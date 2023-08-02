@@ -17,15 +17,20 @@ class Vertex:
         # Attributes
         self._index: int = index
         self._value: any = value
-        self._edges: list = []
-        self._in_edges: list = []
-        self._out_edges: list = []
+        self.edges_a: list = []
+        self.in_edges_a: list = []
+        self.out_edges_a: list = []
         
     def __str__(self):
         return f"{self._index}"
         
     def __repr__(self):
         return self.__str__()
+    
+    def __del__(self):
+        self._index = None
+        del self._value
+        self._value = None
     
     def __lt__(self, other): # <
         return self._index < other.index
@@ -47,6 +52,11 @@ class Vertex:
         """Returns the index of the vertex in the vertex set."""
         return self._index
     
+    @index.setter
+    def index(self, new_index):
+        """Sets the index of the vertex to the new value."""
+        self._index = new_index
+    
     @property
     def value(self):
         """Returns the value of the vertex."""
@@ -65,43 +75,35 @@ class Vertex:
     @property
     def edges(self):
         """Returns a list of all edges that are connected to the vertex."""
-        return self._edges
+        return self.edges_a
         
     @property
     def in_edges(self):
         """Returns a list of all edges that are connected to the vertex."""
-        return self._in_edges
+        return self.in_edges_a
         
     @property
     def out_edges(self):
         """Returns a list of all edges that are connected to the vertex."""
-        return self._out_edges
+        return self.out_edges_a
     
     # Instance methods
     
     def add_edge(self, edge:object):
         """Connects the vertex to the given edge."""
-        self._edges.append(edge)
+        self.edges_a.append(edge)
     
     def add_in_edge(self, edge:object):
         """Adds incoming edge."""
-        self._in_edges.append(edge)
+        self.in_edges_a.append(edge)
     
     def add_out_edge(self, edge:object):
         """Adds outgoing edge."""
-        self._out_edges.append(edge)
+        self.out_edges_a.append(edge)
         
     # Private methods
+
     
-    def __delete_edge(self, edge:object):
-        """Removes the given edge.
-        The edge argument must be an Edge instance reference because there might be \
-        multiple edges connecting the two vertices with the same tuple notation \
-        in which case the deletion procedure is ambiguous. 
-        """
-        assert isinstance(edge, Edge), "The edge argument must be an Edge instance reference."
-        self._edges.remove(edge)
-        del edge
     
     # Class / static methods
     

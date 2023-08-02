@@ -8,29 +8,25 @@ class Graph:
 
     # Dunder methods
 
-    def __init__(self, vertices: list = None, edges: list = None,  directed=False, auto_update=True) -> object:
-        
-        # TODO make the initializer be able to take vertex objects
+    def __init__(self, vertices: list = None, edges: list = None, auto_update=True) -> object:
 
-        # Asserts
+        # Assertions # TODO make them into try/catch
         if vertices: assert isinstance(vertices, list), "The vertices must be provided in a set."
         if vertices: assert Graph.vertex_set_check(vertices), "The vertex set must consist of integers starting at 0 and incrementing in steps of 1."
         if edges: assert isinstance(edges, list), "The edges must be provided in a list of tuples, each with 3 integers at most."
-        if directed: assert isinstance(directed, bool), "Direction must be a boolean value."
         if auto_update: assert isinstance(auto_update, bool), "auto_update must be a boolean value."
         
         # Primary instance variables
-        self._vertices: list = list() # The vertex set containing vertex objects
+        self._vertices: list = list() # The vertex list containing vertex objects
         self._edges: list = list() # The edge set / binary relation containing edge objects
         self._vertex_count: int = len(vertices) if vertices else 0 # The number of vertices
         self._edge_count: int = len(edges) if edges else 0 # The number of edges
-        self._is_directed: bool = directed # Whether edges in the graph are directed
         self._auto_update: bool = auto_update # Whether to update the primary attributes automatically after each new vertex/edge addition
-        if not self._is_directed:
-            self._degree_sequence: list = []
-        elif self._is_directed:
-            self._in_degree_sequence: list = []
-            self._out_degree_sequence: list = []
+        self._degree_sequence: list = []
+        self._highest_vertex_index: int = self._vertex_count
+        self._removed_vertices: list = []
+        self._removed_edges: list = []
+        self._highest_weight_len: int = 1
         
         # Secondary instance variables
         self._is_simple: bool = None # Whether the graph is simple 
@@ -58,13 +54,16 @@ class Graph:
                     self.edge(e[0], e[1])
                 if len(e) == 3: # The weight is provided
                     self.edge(e[0], e[1], e[2])
+            self._update_adj()
+            self._reset_highest_weight_len()
         
     def __str__(self):
         '''The main string representation for str() and print().'''
         self._representation = ""
         for i in range(self._vertex_count):
             for j in range(self._vertex_count):
-                self._representation += str(self._simple_adjacency_matrix[i][j])
+                current_element = str(self._simple_adjacency_matrix[i][j])
+                self._representation += " " * (self._highest_weight_len - len(current_element)) + current_element
                 self._representation += " "
             self._representation += ("\n") if i != self._vertex_count - 1 else ""
         return str(self._representation)
@@ -96,7 +95,8 @@ class Graph:
         """
         Creates and returns a new isolated vertex object that is associated with the graph.
         """
-        new_vertex = Vertex(index=len(self._vertices), value=value)
+        new_vertex = Vertex(index=self._highest_vertex_index, value=value)
+        self._highest_vertex_index += 1
         self._vertices.append(new_vertex)
         self._simple_adjacency_matrix.append([0 for _ in range(self._vertex_count)])
         for row in self._simple_adjacency_matrix:
@@ -113,10 +113,36 @@ class Graph:
                 return v
         return None # In case the vertex with the given index is not present
     
+    def remove_vertex(self, vertex:int|object):
+        """
+        Deletes the given vertex reference. Removes all the edges that are connected to it as well. \
+        Removing a verted does not shift the remaining vertices' index and adding new vertices \
+        afterwards will yield higher index values than the all time highest.\
+        The vertex will exist but inaccessible to the user.\
+        It is not recommended to access and modify the removed vertex.
+        """
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        if vertex in self._vertices and vertex not in self._removed_vertices:
+            # Remove edges to the vertex
+            for _ in range(len(vertex.edges)):
+                self.remove_edge(vertex.edges[0])
+            # Remove the vertex from the graph
+            deleting_vertex_index = vertex.index
+            self._removed_vertices.append(deleting_vertex_index)
+            self._edge_count -= len(vertex.edges)
+            self._vertices.remove(vertex)
+            self._simple_adjacency_matrix[deleting_vertex_index] = [-1 for _ in range(self._vertex_count)]
+            for row in self._simple_adjacency_matrix:
+                row[deleting_vertex_index] = -1
+            del vertex
+            # Reset self._highest_weight_len
+            self._reset_highest_weight_len()
+        else:
+            raise KeyError("The given vertex does not exist or is already removed.")
+            
     def edge(self, v1:int|object, v2:int|object, weight:int=1):
-        """
-        Creates and returns an Edge object, connecting the two given vertices.
-        """
+        """Creates and returns an Edge object, connecting the two given vertices."""
         assert isinstance(v1, int) or isinstance(v1, Vertex), "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex), "The vertex arguments must either be vertex indices or vertex objects."
         if isinstance(v1, int):
@@ -125,10 +151,11 @@ class Graph:
             v2 = self.v(v2)
         if v1 is None: raise KeyError("The given v1 index/vertex does not exist.")
         if v2 is None: raise KeyError("The given v2 index/vertex does not exist.")
-        new_edge = Edge(vertices=(v1, v2), weight=weight, directed=self._is_directed)
+        new_edge = Edge(vertices=tuple([v1, v2]), weight=weight)
         self._edges.append(new_edge)
         self._edge_count += 1
-        self.update_adj(new_edge)
+        self._update_adj()
+        self._reset_highest_weight_len()
         return new_edge
     
     def e(self, v1:int|object, v2:int|object):
@@ -139,21 +166,43 @@ class Graph:
             v1 = self.v(v1)
         if isinstance(v2, int):
             v2 = self.v(v2)
-        if self._is_directed:
-            return [e for e in self._edges if e.vertices == [v1, v2]]
-        else:
-            return [e for e in self._edges if e.vertices == [v1, v2] or e.vertices == [v2, v1]]
+        return [e for e in self._edges if e not in self._removed_edges and (e.vertices == [v1, v2] or e.vertices == [v2, v1])]
     
-    def update_adj(self, edge:object):
-        """Updates self._simple_adjacency_matrix with the new edge value"""
-        if self._is_directed:
-            self._simple_adjacency_matrix[edge[0].index][edge[1].index] += edge[2]
-        else:
+    def remove_edge(self, edge:object):
+        """
+        Removes the given edge.
+        The edge argument must be an Edge instance reference because there might be \
+        multiple edges connecting the two vertices with the same tuple notation \
+        in which case the deletion procedure is ambiguous. 
+        """
+        assert isinstance(edge, Edge), "The edge argument must be an Edge instance reference."
+        self._removed_edges.append(edge)
+        self._edges.remove(edge)
+        for vertex in edge.connected_to:
+            vertex.edges.remove(edge)
+        edge.connected_to = None
+        self._update_adj()
+        self._reset_highest_weight_len()
+        del edge
+    
+    def _update_adj(self):
+        """Updates self._simple_adjacency_matrix with the new edge value."""
+        self._simple_adjacency_matrix: list = [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
+        for edge in self._edges:
             i1 = edge.vertices[0].index
             i2 = edge.vertices[1].index
             if i1 != i2:
                 self._simple_adjacency_matrix[i1][i2] += edge.weight
             self._simple_adjacency_matrix[i2][i1] += edge.weight
+        
+    def _reset_highest_weight_len(self):
+        """Resets the highest weight length for the string representation of the adjacency matrix."""
+        self._highest_weight_len = 1
+        for row in self._simple_adjacency_matrix:
+            for element in row:
+                l = len(str(element))
+                if l > self._highest_weight_len:
+                    self._highest_weight_len = l
     
     def update(self, all_:bool=False):
         '''
@@ -161,13 +210,12 @@ class Graph:
         By default it updates the primary attributes only. To update all (including self.is_wheel()), use all_=True.
         '''
         raise NotImplementedError()
-        # TODO
     
     # Class / static methods
 
     @staticmethod
     def vertex_set_check(a:set):
-        """Returns True if the given set starts at 0 and is ascending. Else returns False."""
+        """Returns True if the given set starts at 0 and is ascending by 1. Else returns False."""
         if a[0] != 0:
             return False
         check = True

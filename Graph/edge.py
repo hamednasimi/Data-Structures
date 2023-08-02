@@ -1,11 +1,11 @@
 # TODO add a function that returns a list of the edges that connect two vertices. arguments that apply to a tuple like (2, 3)
 
 class Edge:
-    """Represents an edge in a graph."""
+    """Represents an undirected edge in a graph."""
     
     # Dunder methods
     
-    def __init__(self, vertices:tuple, weight:int|float=1, directed=False):
+    def __init__(self, vertices:tuple, weight:int|float=1) -> object:
         
         from vertex import Vertex
         assert isinstance(vertices, tuple), "Vertices must be provided in a tuple."
@@ -13,105 +13,46 @@ class Edge:
         assert isinstance(vertices[0], Vertex), "Vertex 1 must be an instance if Vertex."
         assert isinstance(vertices[1], Vertex), "Vertex 2 must be an instance if Vertex."
 
-        self._connected_to: tuple = vertices
-        self._is_directed: bool = directed
-        if self._is_directed:
-            self._leaves: object = vertices[0]
-            self._to: object = vertices[1]
-            vertices[0].add_out_edge(self)
-            vertices[1].add_in_edge(self)
-        else:
-            self._connected_to = sorted(self._connected_to)
+        self.connected_to = sorted(vertices)
+        self._is_directed: bool = False
         vertices[0].add_edge(self)
         vertices[1].add_edge(self)
         self._weight = weight
-        
-    def __del__(self):
-        for v in self._connected_to:
-            v.delete_edge(self)
-        if self._is_directed:
-            self._leaves = None
-            self._to = None
-        else:
-            self._connected_to = None
             
-    def __str__(self):
-        return f"({self._connected_to[0]}, {self._connected_to[1]}, {self._weight})"
+    def __str__(self) -> str:
+        return f"({self.connected_to[0]}, {self.connected_to[1]}, {self._weight})"
         
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
+    
+    def __del__(self) -> None:
+        self._weight = None
             
     # Properties
     
     @property
-    def vertices(self):
+    def vertices(self) -> tuple:
         """Returns a tuple of the vertex objects that the edge is connected to."""
-        return self._connected_to
+        return self.connected_to
     
     @property
-    def weight(self):
+    def weight(self) -> int | float:
         """Returns the weight of the edge."""
         return self._weight
 
-    @property
-    def leaves(self):
-        """If the graph is directed, returns the vertex object that the edge is incident from/leaves."""
-        if self._is_directed: return self._leaves
-        else: raise AttributeError("In an undirected graph, an edge can't have an origin vertex.")
-
-    @property
-    def to(self):
-        """If the graph is directed, returns the vertex object that the edge is incident to/enters."""
-        if self._is_directed: return self._to
-        else: raise AttributeError("In an undirected graph, an edge can't have a destination vertex.")
-    
     # Instance methods
     
-    def is_connected_to(self, vertex:int|object):
-        pass # TODO
+    def is_connected_to(self, vertex:int|object) -> bool:
+        return vertex in self.connected_to
 
-    def leaves_from(self, vertex:int|object):
-        pass # TODO
-    
-    def goes_to(self, vertex:int|object):
-        pass # TODO
-    
     # Class methods
 
     @classmethod
-    def are_adjacent(self, e1, e2) -> bool:
+    def are_adjacent(cls, e1, e2) -> bool:
         """Whether the two given edges are adjacent."""
-        assert isinstance(e1, Edge), "e1 must be an instance if Edge."
-        assert isinstance(e2, Edge), "e1 must be an instance if Edge."
-        # TODO
+        return e1.vertices[0] in e2.vertices or e1.vertices
 
     @classmethod
-    def are_parallel(self, e1, e2) -> bool:
-        """Whether the two given edges are parallel."""
-        # TODO
-
-    @classmethod
-    def leaves_(cls, vertex:object):
-        """Returns a list of edge objects that incident from/leave the given vertex. Returns an empty list if none exist.
-
-        Args:
-            vertex (Vertex): The vertex object.
-        """
-        from vertex import Vertex
-        if isinstance(vertex, Vertex):
-            return vertex.out_edges
-        else:
-            raise KeyError("The given vertex must be of type Vertex.")
-    
-    @classmethod
-    def to_(cls, vertex:object):
-        """Returns a list of edge objects that incident to/enter the given vertex. Returns an empty list if none exist.
-
-        Args:
-            vertex (Vertex): The vertex object.
-        """
-        from vertex import Vertex
-        if isinstance(vertex, Vertex):
-            return vertex.in_edges
-        else:
-            raise KeyError("The given vertex must be of type Vertex.")
+    def are_parallel(cls, e1, e2) -> bool:
+        """Whether the two given undirected edges are parallel."""
+        return e1.vertices == e2.vertices
