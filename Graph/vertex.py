@@ -100,10 +100,4 @@ class Vertex:
     def add_out_edge(self, edge:object):
         """Adds outgoing edge."""
         self.out_edges_a.append(edge)
-        
-    # Private methods
-
-    
-    
-    # Class / static methods
     

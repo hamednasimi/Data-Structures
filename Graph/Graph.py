@@ -10,7 +10,6 @@ class Graph:
 
     def __init__(self, vertices: list = None, edges: list = None, auto_update=True) -> object:
 
-        # Assertions # TODO make them into try/catch
         if vertices: assert isinstance(vertices, list), "The vertices must be provided in a set."
         if vertices: assert Graph.vertex_set_check(vertices), "The vertex set must consist of integers starting at 0 and incrementing in steps of 1."
         if edges: assert isinstance(edges, list), "The edges must be provided in a list of tuples, each with 3 integers at most."
@@ -87,6 +86,7 @@ class Graph:
     
     @property
     def adj(self):
+        self._update_adj()
         return self._simple_adjacency_matrix
     
     # Instance methods
