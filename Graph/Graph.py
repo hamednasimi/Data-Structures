@@ -203,6 +203,7 @@ class Graph:
             "The edge argument must be an Edge instance reference."
         self._removed_edges.append(edge)
         self._edges.remove(edge)
+        self._edge_count -= 1
         for vertex in edge.connected_to:
             vertex.edges.remove(edge)
         edge.connected_to = None
