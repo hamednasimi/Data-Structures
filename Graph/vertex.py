@@ -117,14 +117,30 @@ class Vertex:
         deg = None
         if self._directional_graph:
             if count_self_loop:
-                deg = (len(self._in_edges_a), len(self._out_edges_a))
+                deg = tuple([len(self._in_edges_a), len(self._out_edges_a)])
             else:
-                deg = (sum([1 if not edge.is_self_loop else 0 for edge in self._in_edges_a]),\
-                    sum([1 if not edge.is_self_loop else 0 for edge in self._out_edges_a]))
+                deg = tuple([sum([1 if not edge.is_self_loop else 0 for edge in self._in_edges_a]),\
+                    sum([1 if not edge.is_self_loop else 0 for edge in self._out_edges_a])])
         else:
             if count_self_loop:
-                deg = (len(self._edges_a))
+                deg = tuple([len(self._edges_a)])
             else:
-                deg = (sum([1 if not edge.is_self_loop else 0 for edge in self._edges_a]))
+                deg = tuple([sum([1 if not edge.is_self_loop else 0 for edge in self._edges_a])])
         return deg
     
+    def weight_deg(self, count_self_loop: bool = True) -> tuple:
+        """Returns the summed weight of all edges to the vertex."""
+        deg = None
+        if self._directional_graph:
+            if count_self_loop:
+                deg = tuple([sum([i.weight for i in self._in_edges_a]),\
+                sum([i.weight for i in self._out_edges_a])])
+            else:
+                deg = tuple([sum([i.weight for i in self._in_edges_a if not i.is_self_loop]),\
+                sum([i.weight for i in self._out_edges_a if not i.is_self_loop])])
+        else:
+            if count_self_loop:
+                deg = tuple([sum([i.weight for i in self._edges_a])])
+            else:
+                deg = tuple([sum([i.weight for i in self._edges_a if not i.is_self_loop])])
+        return deg

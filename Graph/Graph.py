@@ -231,12 +231,16 @@ class Graph:
                     self._highest_weight_len = l
 
     def deg(self, vertex: int | object, count_self_loop=True) -> int:
+        """Returns the degree of the given vertex."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.deg(count_self_loop)
 
-    def deg_by_value(self, vertex: int | object, cumulative: bool = True) -> int:
-        pass  # TODO
+    def weight_deg(self, vertex: int | object, count_self_loop=True) -> int:
+        """Returns the summed weight of all edges to the vertex."""
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        return vertex.weight_deg(count_self_loop)
 
     def update(self, all_: bool = False) -> None:
         '''
