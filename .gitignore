@@ -374,3 +374,6 @@ Graph/Testing.py
 /Graph/old_graph.py
 /Graph/Testing.ipynb
 Graph/.vscode/settings.json
+Graph/directed_edge.py
+Graph/directed_graph.py
+Graph/directed_edge.py
