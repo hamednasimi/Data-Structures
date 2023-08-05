@@ -9,7 +9,7 @@ class Graph:
 
     # Dunder methods
 
-    def __init__(self, vertices: list = None, edges: list = None, auto_update=True) -> None:
+    def __init__(self, vertices: list = None, edges: list = None) -> None:
 
         if vertices:
             assert isinstance(vertices, list),\
@@ -20,9 +20,6 @@ class Graph:
         if edges:
             assert isinstance(edges, list),\
                 "The edges must be provided in a list of tuples, each with 3 integers at most."
-        if auto_update:
-            assert isinstance(auto_update, bool),\
-                "auto_update must be a boolean value."
 
         # Primary instance variables
         # The vertex list containing vertex objects
@@ -33,13 +30,11 @@ class Graph:
         self._vertex_count: int = len(vertices) if vertices else 0  
         # The number of edges
         self._edge_count: int = len(edges) if edges else 0  
-        # Whether to update the primary attributes automatically after each new vertex/edge addition
-        self._auto_update: bool = auto_update
         self._degree_sequence: list = []
 
         # Secondary instance variables
         # Whether the graph is simple
-        self._is_simple: bool = None  
+        self._is_simple: bool = None
         # Whether edges in the graph have weights other than 1 and 0 (updated by self.connect())
         self._is_weighted: bool = False
         # Whether every vertex in the graph has at least one edge to every other vertex other than to itself
@@ -49,15 +44,17 @@ class Graph:
         # Whether the graph has at least one isolated vertex
         self._has_isolated: bool = None
         # Whether any two vertices have parallel edges
-        self._is_multigraph: bool = None  
+        self._is_multigraph: bool = None
+        # Whether the graph has at least one self-loop
+        self._has_self_loop: bool = None
         # The main string representation for str() and print()
         self._representation: str = ""
         # Whether every vertex in the graph has a degree of 3 except for one that has the degree v - 1
         self._is_wheel: bool = None
 
         # Matrix representation attributes
-        self._adjacency_matrix: list =\
-            [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
+        # self._adjacency_matrix: list =\
+        #     [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         self._simple_adjacency_matrix: list =\
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         self._distance_matrix: list =\
@@ -106,16 +103,77 @@ class Graph:
 
     @property
     def vertices(self) -> list:
+        """Returns a list of all vertices in the graph"""
         return self._vertices
 
     @property
     def edges(self) -> list:
+        """Returns a list of all edges in the graph"""
         return self._edges
 
     @property
     def adj(self) -> list:
+        """Updates and returns the simple adjacency matrix."""
         self._update_adj()
         return self._simple_adjacency_matrix
+    
+    @property
+    def degree_sequence(self) -> list:
+        """Updates and returns the degree sequence of the graph."""
+        self._degree_sequence = []
+        for vertex in self._vertices:
+            self._degree_sequence.append(self.deg(vertex)[0])
+        self._degree_sequence.sort(reverse=True)
+        return self._degree_sequence
+    
+    @property
+    def has_self_loop(self) -> bool:
+        """Whether the graph has at least one self loop."""
+        self._has_self_loop = False
+        for edge in self._edges:
+            if edge._is_self_loop:
+                self._has_self_loop = True
+                break
+        return self._has_self_loop
+    
+    @property
+    def is_weighted(self) -> bool:
+        """Returns True if the graph is weighted (there are different weights than 1)."""
+        self._is_weighted = False
+        for edge in self._edges:
+            if edge.weight != 1:
+                self._is_weighted = True
+                break
+        return self._is_weighted
+    
+    @property
+    def is_multigraph(self) -> bool:
+        """
+        Returns True if the graph is a multigraph.\
+        A multigraph has more than one edge between two vertices.
+        """
+        self._is_multigraph = False
+        for vertex in self._vertices:
+            vertex_list = []
+            for edge in vertex.edges:
+                if edge.vertices[0] != vertex:
+                    vertex_list.append(edge.vertices[0])
+                else:
+                    vertex_list.append(edge.vertices[1])
+            for v in vertex_list:
+                if vertex_list.count(v) > 1:
+                    self._is_multigraph = True
+                    break
+        return self._is_multigraph
+    
+    @property
+    def check_if_simple(self) -> bool:
+        """
+        Returns True if the graph is simple.\
+        A simple graph is unweighted, has no self-loops and has no parallel edges.
+        """
+        self._is_simple = (not self.is_weighted) and (not self.has_self_loop) and (not self.is_multigraph)
+        return self._is_simple
 
     # Instance methods
 
@@ -255,12 +313,12 @@ class Graph:
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.weight_deg(count_self_loop)
-
+     
     def update(self, all_: bool = False) -> None:
-        '''
+        """
         Updates graph attributes.
         By default it updates the primary attributes only. To update all (including self.is_wheel()), use all_=True.
-        '''
+        """
         raise NotImplementedError()
 
     # Class / static methods
