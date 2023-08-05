@@ -21,40 +21,53 @@ class Graph:
             assert isinstance(edges, list),\
                 "The edges must be provided in a list of tuples, each with 3 integers at most."
         if auto_update:
-            assert isinstance(auto_update, bool), "auto_update must be a boolean value."
+            assert isinstance(auto_update, bool),\
+                "auto_update must be a boolean value."
 
         # Primary instance variables
-        self._vertices: list = list()  # The vertex list containing vertex objects
-        self._edges: list = list()  # The edge set / binary relation containing edge objects
-        self._vertex_count: int = len(vertices) if vertices else 0  # The number of vertices
-        self._edge_count: int = len(edges) if edges else 0  # The number of edges
+        # The vertex list containing vertex objects
+        self._vertices: list = list()  
+        # The edge set / binary relation containing edge objects
+        self._edges: list = list()  
+        # The number of vertices
+        self._vertex_count: int = len(vertices) if vertices else 0  
+        # The number of edges
+        self._edge_count: int = len(edges) if edges else 0  
         # Whether to update the primary attributes automatically after each new vertex/edge addition
         self._auto_update: bool = auto_update
         self._degree_sequence: list = []
-        self._highest_vertex_index: int = self._vertex_count
-        self._removed_vertices: list = []
-        self._removed_edges: list = []
-        self._highest_weight_len: int = 1
 
         # Secondary instance variables
-        self._is_simple: bool = None  # Whether the graph is simple
+        # Whether the graph is simple
+        self._is_simple: bool = None  
         # Whether edges in the graph have weights other than 1 and 0 (updated by self.connect())
         self._is_weighted: bool = False
         # Whether every vertex in the graph has at least one edge to every other vertex other than to itself
         self._is_complete: bool = None
-        self._has_pendent: bool = None  # Whether the graph has at least one pendent vertex
+        # Whether the graph has at least one pendent vertex
+        self._has_pendent: bool = None
         # Whether the graph has at least one isolated vertex
         self._has_isolated: bool = None
-        self._is_multigraph: bool = None  # Whether any two vertices have parallel edges
+        # Whether any two vertices have parallel edges
+        self._is_multigraph: bool = None  
         # The main string representation for str() and print()
         self._representation: str = ""
+        # Whether every vertex in the graph has a degree of 3 except for one that has the degree v - 1
         self._is_wheel: bool = None
 
         # Matrix representation attributes
-        self._adjacency_matrix: list = [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
+        self._adjacency_matrix: list =\
+            [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         self._simple_adjacency_matrix: list =\
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
-        self._distance_matrix: list = [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
+        self._distance_matrix: list =\
+            [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
+            
+        # Miscellaneous
+        self._highest_vertex_index: int = self._vertex_count
+        self._removed_vertices: list = []
+        self._removed_edges: list = []
+        self._highest_weight_len: int = 1
 
         # Initializations
         # Create and add the vertex references
