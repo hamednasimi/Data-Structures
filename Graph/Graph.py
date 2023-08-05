@@ -30,13 +30,16 @@ class Graph:
         self._vertex_count: int = len(vertices) if vertices else 0  
         # The number of edges
         self._edge_count: int = len(edges) if edges else 0  
+        # The main string representation for str() and print()
+        self._representation: str = ""
+        # The reverse sorted degree sequence
         self._degree_sequence: list = []
 
         # Secondary instance variables
         # Whether the graph is simple
         self._is_simple: bool = None
         # Whether edges in the graph have weights other than 1 and 0 (updated by self.connect())
-        self._is_weighted: bool = False
+        self._is_weighted: bool = None
         # Whether every vertex in the graph has at least one edge to every other vertex other than to itself
         self._is_complete: bool = None
         # Whether the graph has at least one pendent vertex
@@ -47,14 +50,10 @@ class Graph:
         self._is_multigraph: bool = None
         # Whether the graph has at least one self-loop
         self._has_self_loop: bool = None
-        # The main string representation for str() and print()
-        self._representation: str = ""
         # Whether every vertex in the graph has a degree of 3 except for one that has the degree v - 1
         self._is_wheel: bool = None
 
         # Matrix representation attributes
-        # self._adjacency_matrix: list =\
-        #     [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         self._simple_adjacency_matrix: list =\
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         self._distance_matrix: list =\
@@ -122,7 +121,7 @@ class Graph:
         """Updates and returns the degree sequence of the graph."""
         self._degree_sequence = []
         for vertex in self._vertices:
-            self._degree_sequence.append(self.deg(vertex)[0])
+            self._degree_sequence.append(self.deg(vertex))
         self._degree_sequence.sort(reverse=True)
         return self._degree_sequence
     
@@ -174,6 +173,17 @@ class Graph:
         """
         self._is_simple = (not self.is_weighted) and (not self.has_self_loop) and (not self.is_multigraph)
         return self._is_simple
+    
+    @property
+    def is_complete(self) -> bool:
+        """Whether every vertex in the graph has at least one edge to every other vertex except for itself"""
+        self._is_complete = True
+        ds = self.degree_sequence
+        for i, vertex in enumerate(self._vertices):
+            if not (ds[i] == self._vertex_count - 1 and not self.loop(vertex)):
+                self._is_complete = False
+                break
+        return self._is_complete
 
     # Instance methods
 
@@ -281,6 +291,12 @@ class Graph:
         self._update_adj()
         self._reset_highest_weight_len()
         del edge
+        
+    def loop(self, vertex):
+        """Returns True if the given vertex has at least one self-loop."""
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        return vertex.loop
 
     def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""

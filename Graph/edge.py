@@ -18,7 +18,7 @@ class Edge:
         vertices[0].add_edge(self)
         vertices[1].add_edge(self)
         self._weight: int = weight
-        self._is_self_loop:bool = self.connected_to[0] is self.connected_to[1]
+        self._is_self_loop: bool = self.connected_to[0] is self.connected_to[1]
 
     def __str__(self) -> str:
         return f"({self.connected_to[0]}, {self.connected_to[1]}, {self._weight})"
@@ -40,7 +40,7 @@ class Edge:
     def weight(self) -> int | float:
         """Returns the weight of the edge."""
         return self._weight
-    
+
     @property
     def is_self_loop(self) -> bool:
         """Returns True if the edge is a self-loop."""

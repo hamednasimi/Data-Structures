@@ -1,11 +1,5 @@
 from edge import Edge
 
-# TODO make the vertex be able to hold instances of other objects as value and be able to
-# apply functions to them or call their methods
-# -> v.apply(function=func, *args): v.func(*args)
-# or for each adjacent vertex, apply a function to them
-
-
 class Vertex:
     """Represents a vertex in a graph."""
 
@@ -21,6 +15,7 @@ class Vertex:
         self._edges_a: list = []
         self._in_edges_a: list = []
         self._out_edges_a: list = []
+        self._loop: bool = None
         self._directional_graph: bool = directional_graph
 
     def __str__(self) -> str:
@@ -93,6 +88,15 @@ class Vertex:
     def out_edges(self) -> list:
         """Returns a list of all edges that are connected to the vertex."""
         return self._out_edges_a
+    
+    @property
+    def loop(self) -> bool:
+        """Returns True if the vertex has a self-loop edge."""
+        self._loop = False
+        for edge in self._edges_a:
+            if edge.is_self_loop:
+                self._loop = True
+        return self._loop
 
     # Instance methods
 
@@ -108,7 +112,7 @@ class Vertex:
         """Adds outgoing edge."""
         self._out_edges_a.append(edge)
 
-    def deg(self, count_self_loop: bool = True) -> tuple:
+    def deg(self, count_self_loop: bool = True) -> int | tuple:
         """
         Returns the degree of the vertex.\
         If the graph is directed returns a tuple containing the in and out degrees.\
@@ -123,9 +127,9 @@ class Vertex:
                     sum([1 if not edge.is_self_loop else 0 for edge in self._out_edges_a])])
         else:
             if count_self_loop:
-                deg = tuple([len(self._edges_a)])
+                deg = len(self._edges_a)
             else:
-                deg = tuple([sum([1 if not edge.is_self_loop else 0 for edge in self._edges_a])])
+                deg = sum([1 if not edge.is_self_loop else 0 for edge in self._edges_a])
         return deg
     
     def weight_deg(self, count_self_loop: bool = True) -> tuple:
