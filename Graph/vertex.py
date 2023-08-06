@@ -1,4 +1,5 @@
 from edge import Edge
+from Utils.BFS_state import BFSState
 
 
 class Vertex:
@@ -18,6 +19,7 @@ class Vertex:
         self._out_edges_a: list = []
         self._loop: bool = None
         self._directional_graph: bool = directional_graph
+        self._BFS_state: BFSState = BFSState.UNSEEN
 
     def __str__(self) -> str:
         return f"{self._index}"
@@ -104,7 +106,7 @@ class Vertex:
         """Returns True if the vertex is isolated \
         (there is no edge connected to the vertex. A self-looping vertex is not pendent)."""
         return self.deg(count_self_loop=False) == 0
-    
+
     @property
     def is_pendent(self) -> bool:
         """
@@ -112,6 +114,17 @@ class Vertex:
         (there is only 1 edge connected to the vertex. A self-looping vertex is not pendent).
         """
         return self.deg(count_self_loop=False) == 1
+    
+    @property
+    def adjacent_vertices(self) -> list:
+        """Returns a list of the vertices that are adjacent to self."""
+        adjacent_vertices = []
+        for edge in self._edges_a:
+            if edge.connected_to[0] == self:
+                adjacent_vertices.append(edge.connected_to[1])
+            else:
+                adjacent_vertices.append(edge.connected_to[0])
+        return adjacent_vertices
 
     # Instance methods
 
@@ -172,4 +185,3 @@ class Vertex:
                 check = True
                 break
         return check
-    

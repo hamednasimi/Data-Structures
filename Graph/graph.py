@@ -23,13 +23,13 @@ class Graph:
 
         # Primary instance variables
         # The vertex list containing vertex objects
-        self._vertices: list = list()  
+        self._vertices: list = list()
         # The edge set / binary relation containing edge objects
-        self._edges: list = list()  
+        self._edges: list = list()
         # The number of vertices
-        self._vertex_count: int = len(vertices) if vertices else 0  
+        self._vertex_count: int = len(vertices) if vertices else 0
         # The number of edges
-        self._edge_count: int = len(edges) if edges else 0  
+        self._edge_count: int = len(edges) if edges else 0
         # The main string representation for str() and print()
         self._representation: str = ""
         # The reverse sorted degree sequence
@@ -58,7 +58,7 @@ class Graph:
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         self._distance_matrix: list =\
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
-            
+
         # Miscellaneous
         self._highest_vertex_index: int = self._vertex_count
         self._removed_vertices: list = []
@@ -115,7 +115,7 @@ class Graph:
         """Updates and returns the simple adjacency matrix."""
         self._update_adj()
         return self._simple_adjacency_matrix
-    
+
     @property
     def degree_sequence(self) -> list:
         """Updates and returns the degree sequence of the graph."""
@@ -124,7 +124,7 @@ class Graph:
             self._degree_sequence.append(self.deg(vertex))
         self._degree_sequence.sort(reverse=True)
         return self._degree_sequence
-    
+
     @property
     def has_self_loop(self) -> bool:
         """Whether the graph has at least one self loop."""
@@ -134,7 +134,7 @@ class Graph:
                 self._has_self_loop = True
                 break
         return self._has_self_loop
-    
+
     @property
     def is_weighted(self) -> bool:
         """Returns True if the graph is weighted (there are different weights than 1)."""
@@ -144,7 +144,7 @@ class Graph:
                 self._is_weighted = True
                 break
         return self._is_weighted
-    
+
     @property
     def is_multigraph(self) -> bool:
         """
@@ -164,16 +164,16 @@ class Graph:
                     self._is_multigraph = True
                     break
         return self._is_multigraph
-    
+
     @property
-    def check_if_simple(self) -> bool:
+    def is_simple(self) -> bool:
         """
         Returns True if the graph is simple.\
         A simple graph is unweighted, has no self-loops and has no parallel edges.
         """
         self._is_simple = (not self.is_weighted) and (not self.has_self_loop) and (not self.is_multigraph)
         return self._is_simple
-    
+
     @property
     def is_complete(self) -> bool:
         """Whether every vertex in the graph has at least one edge to every other vertex except for itself"""
@@ -184,16 +184,50 @@ class Graph:
                 self._is_complete = False
                 break
         return self._is_complete
-    
+
     @property
     def isolated(self) -> list:
         """Returns a list of all isolated vertices."""
         return [vertex for vertex in self._vertices if vertex.is_isolated]
-    
+
     @property
-    def pendent(self):
+    def pendent(self) -> list:
         """Returns a list of all pendent vertices."""
         return [vertex for vertex in self._vertices if vertex.is_pendent]
+
+    @property
+    def distance_matrix(self) -> list:
+        """Updates and returns the distance matrix."""
+        if self.is_simple:
+            return self._simple_graph_BFS
+
+    @property
+    def _simple_graph_BFS(self) -> list:
+        """Automatically runs when the distance_matrix is called only if the graph is simple."""
+        from Utils.BFS_state import BFSState
+        for vertex in self._vertices:
+            queue = []
+            distance = [0 for _ in range(self._vertex_count)]
+            vertex._BFS_state = BFSState.SEEN
+            if not vertex.is_isolated:
+                queue.append(vertex)
+                while len(queue) > 0:
+                    current = queue.pop(0)
+                    for edge in current.edges:
+                        if edge.connected_to[0] == current:
+                            other_vertex = edge.connected_to[1]
+                        else:
+                            other_vertex = edge.connected_to[0]
+                        if other_vertex._BFS_state == BFSState.UNSEEN:
+                            other_vertex._BFS_state = BFSState.SEEN
+                            distance[other_vertex.index] = distance[current.index] + 1
+                            queue.append(other_vertex)
+                    current._BFS_state = BFSState.VISITED
+            for i, element in enumerate(distance):
+                self._distance_matrix[vertex.index][i] = element
+            for v in self._vertices:
+                v._BFS_state = BFSState.UNSEEN
+        return self._distance_matrix
 
     # Instance methods
 
@@ -204,9 +238,11 @@ class Graph:
         new_vertex = Vertex(index=self._highest_vertex_index, value=value)
         self._highest_vertex_index += 1
         self._vertices.append(new_vertex)
-        self._simple_adjacency_matrix.append(
-            [0 for _ in range(self._vertex_count)])
+        self._simple_adjacency_matrix.append([0 for _ in range(self._vertex_count)])
         for row in self._simple_adjacency_matrix:
+            row.extend([0])
+        self._distance_matrix.append([0 for _ in range(self._vertex_count)])
+        for row in self._distance_matrix:
             row.extend([0])
         self._vertex_count += 1
         return new_vertex
@@ -301,12 +337,31 @@ class Graph:
         self._update_adj()
         self._reset_highest_weight_len()
         del edge
-        
+
     def loop(self, vertex):
         """Returns True if the given vertex has at least one self-loop."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.loop
+
+    def deg(self, vertex: int | object, count_self_loop=True) -> int:
+        """Returns the degree of the given vertex."""
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        return vertex.deg(count_self_loop)
+
+    def weight_deg(self, vertex: int | object, count_self_loop=True) -> int:
+        """Returns the summed weight of all edges to the vertex."""
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        return vertex.weight_deg(count_self_loop)
+
+    def update(self, all_: bool = False) -> None:
+        """
+        Updates graph attributes.
+        By default it updates the primary attributes only. To update all (including self.is_wheel()), use all_=True.
+        """
+        raise NotImplementedError()
 
     def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
@@ -327,25 +382,6 @@ class Graph:
                 l = len(str(element))
                 if l > self._highest_weight_len:
                     self._highest_weight_len = l
-
-    def deg(self, vertex: int | object, count_self_loop=True) -> int:
-        """Returns the degree of the given vertex."""
-        if isinstance(vertex, int):
-            vertex = self.v(vertex)
-        return vertex.deg(count_self_loop)
-
-    def weight_deg(self, vertex: int | object, count_self_loop=True) -> int:
-        """Returns the summed weight of all edges to the vertex."""
-        if isinstance(vertex, int):
-            vertex = self.v(vertex)
-        return vertex.weight_deg(count_self_loop)
-     
-    def update(self, all_: bool = False) -> None:
-        """
-        Updates graph attributes.
-        By default it updates the primary attributes only. To update all (including self.is_wheel()), use all_=True.
-        """
-        raise NotImplementedError()
 
     # Class / static methods
 
