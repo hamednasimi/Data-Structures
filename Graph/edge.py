@@ -45,6 +45,8 @@ class Edge:
     def is_self_loop(self) -> bool:
         """Returns True if the edge is a self-loop."""
         return self._is_self_loop
+    
+    loop = is_self_loop
 
     # Instance methods
 

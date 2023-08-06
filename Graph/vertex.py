@@ -1,5 +1,6 @@
 from edge import Edge
 
+
 class Vertex:
     """Represents a vertex in a graph."""
 
@@ -88,7 +89,7 @@ class Vertex:
     def out_edges(self) -> list:
         """Returns a list of all edges that are connected to the vertex."""
         return self._out_edges_a
-    
+
     @property
     def loop(self) -> bool:
         """Returns True if the vertex has a self-loop edge."""
@@ -97,6 +98,20 @@ class Vertex:
             if edge.is_self_loop:
                 self._loop = True
         return self._loop
+
+    @property
+    def is_isolated(self) -> bool:
+        """Returns True if the vertex is isolated \
+        (there is no edge connected to the vertex. A self-looping vertex is not pendent)."""
+        return self.deg(count_self_loop=False) == 0
+    
+    @property
+    def is_pendent(self) -> bool:
+        """
+        Returns True if the given vertex is pendent \
+        (there is only 1 edge connected to the vertex. A self-looping vertex is not pendent).
+        """
+        return self.deg(count_self_loop=False) == 1
 
     # Instance methods
 
@@ -123,28 +138,38 @@ class Vertex:
             if count_self_loop:
                 deg = tuple([len(self._in_edges_a), len(self._out_edges_a)])
             else:
-                deg = tuple([sum([1 if not edge.is_self_loop else 0 for edge in self._in_edges_a]),\
-                    sum([1 if not edge.is_self_loop else 0 for edge in self._out_edges_a])])
+                deg = tuple([sum([1 if not edge.is_self_loop else 0 for edge in self._in_edges_a]),
+                             sum([1 if not edge.is_self_loop else 0 for edge in self._out_edges_a])])
         else:
             if count_self_loop:
                 deg = len(self._edges_a)
             else:
                 deg = sum([1 if not edge.is_self_loop else 0 for edge in self._edges_a])
         return deg
-    
+
     def weight_deg(self, count_self_loop: bool = True) -> tuple:
         """Returns the summed weight of all edges to the vertex."""
         deg = None
         if self._directional_graph:
             if count_self_loop:
-                deg = tuple([sum([i.weight for i in self._in_edges_a]),\
-                sum([i.weight for i in self._out_edges_a])])
+                deg = tuple([sum([i.weight for i in self._in_edges_a]),
+                             sum([i.weight for i in self._out_edges_a])])
             else:
-                deg = tuple([sum([i.weight for i in self._in_edges_a if not i.is_self_loop]),\
-                sum([i.weight for i in self._out_edges_a if not i.is_self_loop])])
+                deg = tuple([sum([i.weight for i in self._in_edges_a if not i.is_self_loop]),
+                             sum([i.weight for i in self._out_edges_a if not i.is_self_loop])])
         else:
             if count_self_loop:
                 deg = tuple([sum([i.weight for i in self._edges_a])])
             else:
                 deg = tuple([sum([i.weight for i in self._edges_a if not i.is_self_loop])])
         return deg
+
+    def is_adjacent_to(self, vertex) -> bool:
+        """Whether the given vertex is adjacent to self."""
+        check = False
+        for edge in self._edges_a:
+            if edge.is_connected_to(vertex):
+                check = True
+                break
+        return check
+    

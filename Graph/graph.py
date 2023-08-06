@@ -184,6 +184,16 @@ class Graph:
                 self._is_complete = False
                 break
         return self._is_complete
+    
+    @property
+    def isolated(self) -> list:
+        """Returns a list of all isolated vertices."""
+        return [vertex for vertex in self._vertices if vertex.is_isolated]
+    
+    @property
+    def pendent(self):
+        """Returns a list of all pendent vertices."""
+        return [vertex for vertex in self._vertices if vertex.is_pendent]
 
     # Instance methods
 
