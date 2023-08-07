@@ -189,11 +189,27 @@ class Graph:
     def isolated(self) -> list:
         """Returns a list of all isolated vertices."""
         return [vertex for vertex in self._vertices if vertex.is_isolated]
-
+    
+    @property
+    def has_isolated(self) -> bool:
+        """Returns True if the graph has at least one isolated vertex."""
+        self._has_isolated = False
+        if len(self.isolated) > 0:
+            self._has_isolated = True
+        return self._has_isolated
+    
     @property
     def pendent(self) -> list:
         """Returns a list of all pendent vertices."""
         return [vertex for vertex in self._vertices if vertex.is_pendent]
+    
+    @property
+    def has_pendent(self):
+        """Returns True if the graph has at least one pendent vertex."""
+        self._has_pendent = False
+        if len(self.pendent) > 0:
+            self._has_pendent = True
+        return self._has_pendent
 
     @property
     def distance_matrix(self) -> list:
