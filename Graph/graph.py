@@ -342,7 +342,7 @@ class Graph:
         self._reset_highest_weight_len()
         del edge
 
-    def loop(self, vertex: int | vertex):
+    def loop(self, vertex: int | object):
         """Returns True if the given vertex has at least one self-loop."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
