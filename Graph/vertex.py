@@ -32,22 +32,22 @@ class Vertex:
         del self._value
         self._value = None
 
-    def __lt__(self, other) -> bool:  # <
+    def __lt__(self, other: object) -> bool:  # <
         return self._index < other.index
 
-    def __le__(self, other) -> bool:  # <=
+    def __le__(self, other: object) -> bool:  # <=
         return self._index <= other.index
 
-    def __eq__(self, other) -> bool:  # ==
+    def __eq__(self, other: object) -> bool:  # ==
         return self is other
 
-    def __ne__(self, other) -> bool:  # !=
+    def __ne__(self, other: object) -> bool:  # !=
         return self is not other
 
-    def __gt__(self, other) -> bool:  # >
+    def __gt__(self, other: object) -> bool:  # >
         return self._index > other.index
 
-    def __ge__(self, other) -> bool:  # >=
+    def __ge__(self, other: object) -> bool:  # >=
         return self._index >= other.index
 
     # Properties
@@ -114,7 +114,7 @@ class Vertex:
         (there is only 1 edge connected to the vertex. A self-looping vertex is not pendent).
         """
         return self.deg(count_self_loop=False) == 1
-    
+
     @property
     def adjacent_vertices(self) -> list:
         """Returns a list of the vertices that are adjacent to self."""
@@ -177,7 +177,7 @@ class Vertex:
                 deg = tuple([sum([i.weight for i in self._edges_a if not i.is_self_loop])])
         return deg
 
-    def is_adjacent_to(self, vertex) -> bool:
+    def is_adjacent_to(self, vertex: object) -> bool:
         """Whether the given vertex is adjacent to self."""
         check = False
         for edge in self._edges_a:
