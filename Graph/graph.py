@@ -205,28 +205,31 @@ class Graph:
     def _simple_graph_BFS(self) -> list:
         """Automatically runs when the distance_matrix is called only if the graph is simple."""
         from Utils.BFS_state import BFSState
-        for vertex in self._vertices:
-            queue = []
-            distance = [0 for _ in range(self._vertex_count)]
-            vertex._BFS_state = BFSState.SEEN
-            if not vertex.is_isolated:
-                queue.append(vertex)
-                while len(queue) > 0:
-                    current = queue.pop(0)
-                    for edge in current.edges:
-                        if edge.connected_to[0] == current:
-                            other_vertex = edge.connected_to[1]
-                        else:
-                            other_vertex = edge.connected_to[0]
-                        if other_vertex._BFS_state == BFSState.UNSEEN:
-                            other_vertex._BFS_state = BFSState.SEEN
-                            distance[other_vertex.index] = distance[current.index] + 1
-                            queue.append(other_vertex)
-                    current._BFS_state = BFSState.VISITED
+        for vertex in range(self._vertex_count):
+            vertex_index = vertex
+            distance = [0 for _ in range(self._highest_vertex_index)]
+            if vertex not in self._removed_vertices:
+                vertex = self.v(vertex)
+                queue = []
+                vertex._BFS_state = BFSState.SEEN
+                if not vertex.is_isolated:
+                    queue.append(vertex)
+                    while len(queue) > 0:
+                        current = queue.pop(0)
+                        for edge in current.edges:
+                            if edge.connected_to[0] == current:
+                                other_vertex = edge.connected_to[1]
+                            else:
+                                other_vertex = edge.connected_to[0]
+                            if other_vertex._BFS_state == BFSState.UNSEEN:
+                                other_vertex._BFS_state = BFSState.SEEN
+                                distance[other_vertex.index] = distance[current.index] + 1
+                                queue.append(other_vertex)
+                        current._BFS_state = BFSState.VISITED
+                for v in self._vertices:
+                    v._BFS_state = BFSState.UNSEEN
             for i, element in enumerate(distance):
-                self._distance_matrix[vertex.index][i] = element
-            for v in self._vertices:
-                v._BFS_state = BFSState.UNSEEN
+                self._distance_matrix[vertex_index][i] = element
         return self._distance_matrix
 
     # Instance methods
@@ -251,6 +254,8 @@ class Graph:
         """
         Returns the vertex with the index if it exists. Else returns None.
         """
+        if index in self._removed_vertices:
+            raise KeyError("The requested vertex is removed.")
         for v in self._vertices:
             if v.index == index:
                 return v
@@ -283,8 +288,7 @@ class Graph:
             # Reset self._highest_weight_len
             self._reset_highest_weight_len()
         else:
-            raise KeyError(
-                "The given vertex does not exist or is already removed.")
+            raise KeyError("The given vertex does not exist or is already removed.")
 
     def edge(self, v1: int | object, v2: int | object, weight: int = 1) -> object:
         """Creates and returns an Edge object, connecting the two given vertices."""
@@ -355,13 +359,13 @@ class Graph:
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.weight_deg(count_self_loop)
-
-    def update(self, all_: bool = False) -> None:
+    
+    def d(self, origin, destination) -> int:
         """
-        Updates graph attributes.
-        By default it updates the primary attributes only. To update all (including self.is_wheel()), use all_=True.
+        Returns the shortest distance between the origin and destination as an int.\
+        The distance is the number of edges between the two points.
         """
-        raise NotImplementedError()
+        return self.distance_matrix[origin][destination]
 
     def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
