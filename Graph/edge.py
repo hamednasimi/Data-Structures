@@ -20,6 +20,9 @@ class Edge:
         self._weight: int = weight
         self._is_self_loop: bool = self.connected_to[0] is self.connected_to[1]
 
+        # Aliases
+        self.incident_on = self.connected_to
+
     def __str__(self) -> str:
         return f"({self.connected_to[0]}, {self.connected_to[1]}, {self._weight})"
 
@@ -45,7 +48,7 @@ class Edge:
     def is_self_loop(self) -> bool:
         """Returns True if the edge is a self-loop."""
         return self._is_self_loop
-    
+
     loop = is_self_loop
 
     # Instance methods
@@ -56,11 +59,11 @@ class Edge:
     # Class methods
 
     @classmethod
-    def are_adjacent(cls, e1, e2) -> bool:
+    def are_adjacent(cls, e1: object, e2: object) -> bool:
         """Whether the two given edges are adjacent."""
         return e1.vertices[0] in e2.vertices or e1.vertices
 
     @classmethod
-    def are_parallel(cls, e1, e2) -> bool:
+    def are_parallel(cls, e1: object, e2: object) -> bool:
         """Whether the two given undirected edges are parallel."""
         return e1.vertices == e2.vertices

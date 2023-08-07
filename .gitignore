@@ -376,5 +376,4 @@ Graph/Testing.py
 Graph/.vscode/settings.json
 Graph/directed_edge.py
 Graph/directed_graph.py
-Graph/directed_edge.py
-directed_edge.py
+.vscode/settings.json

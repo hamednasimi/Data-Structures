@@ -94,7 +94,7 @@ class Graph:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, index) -> list:
+    def __getitem__(self, index: int) -> list:
         """Returns the vertex with the given index."""
         return self._vertices[index]
 
@@ -234,7 +234,7 @@ class Graph:
 
     # Instance methods
 
-    def vertex(self, value=None) -> object:
+    def vertex(self, value: object = None) -> object:
         """
         Creates and returns a new isolated vertex object that is associated with the graph.
         """
@@ -250,7 +250,7 @@ class Graph:
         self._vertex_count += 1
         return new_vertex
 
-    def v(self, index) -> object:
+    def v(self, index: int) -> object:
         """
         Returns the vertex with the index if it exists. Else returns None.
         """
@@ -342,30 +342,40 @@ class Graph:
         self._reset_highest_weight_len()
         del edge
 
-    def loop(self, vertex):
+    def loop(self, vertex: int | vertex):
         """Returns True if the given vertex has at least one self-loop."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.loop
 
-    def deg(self, vertex: int | object, count_self_loop=True) -> int:
+    def deg(self, vertex: int | object, count_self_loop: bool = True) -> int:
         """Returns the degree of the given vertex."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.deg(count_self_loop)
 
-    def weight_deg(self, vertex: int | object, count_self_loop=True) -> int:
+    def weight_deg(self, vertex: int | object, count_self_loop: bool = True) -> int:
         """Returns the summed weight of all edges to the vertex."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.weight_deg(count_self_loop)
-    
-    def d(self, origin, destination) -> int:
+
+    def d(self, origin: int | object, destination: int | object) -> int:
         """
         Returns the shortest distance between the origin and destination as an int.\
         The distance is the number of edges between the two points.
         """
+        if isinstance(origin, Vertex):
+            origin = origin.index
+        if isinstance(destination, Vertex):
+            destination = destination.index
         return self.distance_matrix[origin][destination]
+
+    def incident_on(self, vertex: int | object):
+        """Returns every edge connected to the vertex."""
+        if isinstance(vertex, int):
+            return self.v(vertex).edges
+        return vertex.edges
 
     def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
