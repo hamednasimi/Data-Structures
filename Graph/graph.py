@@ -204,7 +204,7 @@ class Graph:
         return [vertex for vertex in self._vertices if vertex.is_pendent]
     
     @property
-    def has_pendent(self):
+    def has_pendent(self) -> bool:
         """Returns True if the graph has at least one pendent vertex."""
         self._has_pendent = False
         if len(self.pendent) > 0:
