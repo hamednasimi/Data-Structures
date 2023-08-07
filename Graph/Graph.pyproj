@@ -20,8 +20,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="directed_edge.py" />
+    <Compile Include="directed_graph.py" />
     <Compile Include="old_graph.py" />
     <Compile Include="Testing.py" />
+    <Compile Include="Utils\BFS_state.py" />
+    <Compile Include="Utils\visualization.py" />
+    <Compile Include="Utils\__init__.py" />
     <Compile Include="vertex.py" />
     <Compile Include="edge.py">
       <SubType>Code</SubType>
@@ -33,6 +38,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
+    <Content Include="Utils\__pycache__\BFS_state.cpython-311.pyc" />
+    <Content Include="Utils\__pycache__\visualization.cpython-311.pyc" />
+    <Content Include="Utils\__pycache__\__init__.cpython-311.pyc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\" />
+    <Folder Include="Utils\__pycache__\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
