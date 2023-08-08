@@ -189,7 +189,7 @@ class Graph:
     def isolated(self) -> list:
         """Returns a list of all isolated vertices."""
         return [vertex for vertex in self._vertices if vertex.is_isolated]
-    
+
     @property
     def has_isolated(self) -> bool:
         """Returns True if the graph has at least one isolated vertex."""
@@ -197,12 +197,12 @@ class Graph:
         if len(self.isolated) > 0:
             self._has_isolated = True
         return self._has_isolated
-    
+
     @property
     def pendent(self) -> list:
         """Returns a list of all pendent vertices."""
         return [vertex for vertex in self._vertices if vertex.is_pendent]
-    
+
     @property
     def has_pendent(self) -> bool:
         """Returns True if the graph has at least one pendent vertex."""
@@ -215,38 +215,26 @@ class Graph:
     def distance_matrix(self) -> list:
         """Updates and returns the distance matrix."""
         if self.is_simple:
-            return self._simple_graph_BFS
+            for vertex in self._vertices:
+                for i, element in enumerate(self._simple_BFS(vertex)):
+                    self._distance_matrix[vertex.index][i] = element
+            return self._distance_matrix
 
     @property
-    def _simple_graph_BFS(self) -> list:
-        """Automatically runs when the distance_matrix is called only if the graph is simple."""
-        from Utils.BFS_state import BFSState
-        for vertex in range(self._vertex_count):
-            vertex_index = vertex
-            distance = [0 for _ in range(self._highest_vertex_index)]
-            if vertex not in self._removed_vertices:
-                vertex = self.v(vertex)
-                queue = []
-                vertex._BFS_state = BFSState.SEEN
-                if not vertex.is_isolated:
-                    queue.append(vertex)
-                    while len(queue) > 0:
-                        current = queue.pop(0)
-                        for edge in current.edges:
-                            if edge.connected_to[0] == current:
-                                other_vertex = edge.connected_to[1]
-                            else:
-                                other_vertex = edge.connected_to[0]
-                            if other_vertex._BFS_state == BFSState.UNSEEN:
-                                other_vertex._BFS_state = BFSState.SEEN
-                                distance[other_vertex.index] = distance[current.index] + 1
-                                queue.append(other_vertex)
-                        current._BFS_state = BFSState.VISITED
-                for v in self._vertices:
-                    v._BFS_state = BFSState.UNSEEN
-            for i, element in enumerate(distance):
-                self._distance_matrix[vertex_index][i] = element
-        return self._distance_matrix
+    def radius(self) -> int:
+        """Returns the radius of the graph."""
+        e = []
+        for vertex in self._vertices:
+            e.append(self.eccentricity(vertex))
+        return min(e)
+   
+    @property
+    def diameter(self) -> int:
+        """Returns the diameter of the graph."""
+        e = []
+        for vertex in self._vertices:
+            e.append(self.eccentricity(vertex))
+        return max(e)
 
     # Instance methods
 
@@ -327,8 +315,10 @@ class Graph:
         self._reset_highest_weight_len()
         return new_edge
 
-    def e(self, v1: int | object, v2: int | object) -> list:
+    def e(self, v1: int | object, v2: int | object = None) -> list:
         """Returns a list of all the edges connecting the two given vertices."""
+        if v2 == None:
+            return self.eccentricity(v1)
         assert isinstance(v1, int) or isinstance(v1, Vertex),\
             "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex),\
@@ -358,7 +348,7 @@ class Graph:
         self._reset_highest_weight_len()
         del edge
 
-    def loop(self, vertex: int | object):
+    def loop(self, vertex: int | object) -> bool:
         """Returns True if the given vertex has at least one self-loop."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
@@ -392,6 +382,39 @@ class Graph:
         if isinstance(vertex, int):
             return self.v(vertex).edges
         return vertex.edges
+
+    def eccentricity(self, vertex: object) -> int:
+        """
+        Returns the longest of shortest distances between the given vertex and all other vertices.
+        """
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        return max(self._simple_BFS(vertex))
+
+    def _simple_BFS(self, vertex: object) -> list:
+        """Returns a list of the distances from the given vertex too all other vertices."""
+        from Utils.BFS_state import BFSState
+        distance = [0 for _ in range(self._highest_vertex_index)]
+        if vertex not in self._removed_vertices:
+            queue = []
+            vertex._BFS_state = BFSState.SEEN
+            if not vertex.is_isolated:
+                queue.append(vertex)
+                while len(queue) > 0:
+                    current = queue.pop(0)
+                    for edge in current.edges:
+                        if edge.connected_to[0] == current:
+                            other_vertex = edge.connected_to[1]
+                        else:
+                            other_vertex = edge.connected_to[0]
+                        if other_vertex._BFS_state == BFSState.UNSEEN:
+                            other_vertex._BFS_state = BFSState.SEEN
+                            distance[other_vertex.index] = distance[current.index] + 1
+                            queue.append(other_vertex)
+                    current._BFS_state = BFSState.VISITED
+            for v in self._vertices:
+                v._BFS_state = BFSState.UNSEEN
+        return distance
 
     def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
