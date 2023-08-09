@@ -29,11 +29,19 @@ class Graph:
         # The number of vertices
         self._vertex_count: int = len(vertices) if vertices else 0
         # The number of edges
-        self._edge_count: int = len(edges) if edges else 0
+        self._edge_count: int = 0
         # The main string representation for str() and print()
         self._representation: str = ""
         # The reverse sorted degree sequence
         self._degree_sequence: list = []
+        # The radius of the graph
+        self._radius: int = 0
+        # The diameter of the graph
+        self._diameter: int = 0
+        # The central vertices
+        self._central: list = []
+        # The sum of the degrees of all vertices
+        self._n: int = 0
 
         # Secondary instance variables
         # Whether the graph is simple
@@ -50,6 +58,8 @@ class Graph:
         self._is_multigraph: bool = None
         # Whether the graph has at least one self-loop
         self._has_self_loop: bool = None
+        # Whether the graph is connected (every vertex has a path to every other veretex)
+        self._is_connected: bool = None
         # Whether every vertex in the graph has a degree of 3 except for one that has the degree v - 1
         self._is_wheel: bool = None
 
@@ -77,7 +87,6 @@ class Graph:
                     self.edge(e[0], e[1])
                 if len(e) == 3:  # The weight is provided
                     self.edge(e[0], e[1], e[2])
-            self._update_adj()
             self._reset_highest_weight_len()
 
     def __str__(self) -> str:
@@ -117,6 +126,16 @@ class Graph:
         return self._simple_adjacency_matrix
 
     @property
+    def vertex_count(self) -> int:
+        """Returns the number of vertices."""
+        return self._vertex_count
+
+    @property
+    def edge_count(self) -> int:
+        """Returns the number of vertices."""
+        return self._edge_count
+
+    @property
     def degree_sequence(self) -> list:
         """Updates and returns the degree sequence of the graph."""
         self._degree_sequence = []
@@ -134,6 +153,17 @@ class Graph:
                 self._has_self_loop = True
                 break
         return self._has_self_loop
+
+    @property
+    def is_connected(self) -> bool:
+        """Whether the graph is connected (every vertex has a path to every other veretex)."""
+        self._is_connected = True
+        for i, row in enumerate(self.distance_matrix):
+            for distance in row:
+                if row.index(distance) != i and distance == 0:
+                    self._is_connected = False
+                    return self._is_connected
+        return self._is_connected
 
     @property
     def is_weighted(self) -> bool:
@@ -226,15 +256,41 @@ class Graph:
         e = []
         for vertex in self._vertices:
             e.append(self.eccentricity(vertex))
-        return min(e)
-   
+        self._radius = min(e)
+        return self._radius
+
+    @property
+    def r(self) -> int:
+        """Alias for the radius property."""
+        return self.radius
+
     @property
     def diameter(self) -> int:
         """Returns the diameter of the graph."""
         e = []
         for vertex in self._vertices:
             e.append(self.eccentricity(vertex))
-        return max(e)
+        self._diameter = max(e)
+        return self._diameter
+
+    @property
+    def central(self) -> list:
+        """
+        Returns a list of all central vertices of the graph.\
+        A central vertex's eccentricity is equal to the radius of the graph.
+        """
+        self._central = [vertex for vertex in self._vertices if self.eccentricity(vertex) == self._radius]
+        return self._central
+
+    @property
+    def n(self) -> int:
+        """Returns the sum of the degrees of all vertices."""
+        if self._is_complete:
+            self._n = self._vertex_count * (self._vertex_count - 1)
+            return self._n
+        else:
+            self._n = sum(self.degree_sequence)
+            return self._n
 
     # Instance methods
 
@@ -316,7 +372,10 @@ class Graph:
         return new_edge
 
     def e(self, v1: int | object, v2: int | object = None) -> list:
-        """Returns a list of all the edges connecting the two given vertices."""
+        """
+        With only the v1 argument given, returns the eccentricity of the vertex.
+        With both arguments, returns a list of all the edges connecting the two given vertices.
+        """
         if v2 == None:
             return self.eccentricity(v1)
         assert isinstance(v1, int) or isinstance(v1, Vertex),\
@@ -377,7 +436,7 @@ class Graph:
             destination = destination.index
         return self.distance_matrix[origin][destination]
 
-    def incident_on(self, vertex: int | object):
+    def incident_on(self, vertex: int | object) -> list:
         """Returns every edge connected to the vertex."""
         if isinstance(vertex, int):
             return self.v(vertex).edges
@@ -453,3 +512,24 @@ class Graph:
                 check = False
                 break
         return check
+
+    @staticmethod
+    def N(vertex_count) -> int:
+        """Returns the sum of the degrees of a complete graph given the vertex count."""
+        return vertex_count * (vertex_count - 1)
+
+    @staticmethod
+    def E(vertex_count) -> int:
+        """
+        Returns the maximum possible number of edges given the vertex count \
+        assuming the graph is simple and complete.
+        """
+        return Graph.n(vertex_count) // 2
+
+    @staticmethod
+    def edge_subset(vertex_count: int) -> int:
+        """
+        Returns the number of possible subsets of edges with a certain number of vertives \
+        assuming the graph is simple.
+        """
+        return 2 ** Graph.E(vertex_count)
