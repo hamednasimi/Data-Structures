@@ -1,12 +1,15 @@
 Currently supports the very basic functionalities and attributes of a graph.
+It is very minimally tested. Just enough so that you can create objects and play around with them.
 
 Usage:
 
 ```python
 from graph import Graph
+
 # There are two ways of creating a graph:
 # 1. Initiate the empty graph and create the vertices and edges later on
 G = Graph()
+
 # Add vertices and edges manually and save a reference to them
 vertex1 = G.vertex() # Add an isolated vertex
 vertex2 = G.vertex()
