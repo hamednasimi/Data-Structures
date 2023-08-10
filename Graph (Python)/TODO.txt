@@ -1,0 +1,9 @@
+TODO Adjacency list
+TODO Connected component
+TODO Directed cyclic graph
+TODO Directed Acyclic graph
+TODO Trees
+TODO Path of least length
+TODO Cycle detection
+TODO Path that uses each edge exactly once
+TODO Path that uses each vertex exactly once
