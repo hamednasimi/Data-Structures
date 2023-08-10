@@ -124,6 +124,12 @@ class Graph:
         """Updates and returns the simple adjacency matrix."""
         self._update_adj()
         return self._simple_adjacency_matrix
+    
+    @property
+    def M(self):
+        """Updates and returns the simple adjacency matrix (same as self.adj)."""
+        self._update_adj()
+        return self._simple_adjacency_matrix
 
     @property
     def vertex_count(self) -> int:
