@@ -1,5 +1,3 @@
-# TODO add a function that returns a list of the edges that connect two vertices. arguments that apply to a tuple like (2, 3)
-
 class Edge:
     """Represents an undirected edge in a graph."""
 
