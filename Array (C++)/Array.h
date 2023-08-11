@@ -4,10 +4,10 @@ template <typename T>
 class Array
 {
 private: // Member variables
-	int m_size{ 0 };
-	T* m_values{ nullptr };
-	int m_sum{ 0 };
-	const char* m_type;
+	int m_size{0};
+	T *m_values{nullptr};
+	int m_sum{0};
+	const char *m_type;
 
 public: // Methods
 	// Default constructor
@@ -24,7 +24,7 @@ public: // Methods
 		this->m_type = typeid(*this).name();
 	}
 
-	Array(const Array& array)
+	Array(const Array &array)
 	{
 		this->m_size = array.m_size;
 		this->m_values = new T[m_size]; // allocate new array
@@ -35,18 +35,10 @@ public: // Methods
 		this->m_type = typeid(*this).name();
 	}
 
-	//~Array()
-	//{
-	//	if (m_values != nullptr)
-	//	{
-	//		for (int i{ 0 }; i < m_size; i++)
-	//		{
-	//			m_values[i].~T();
-	//		}
-	//		delete[] m_values;
-	//		m_values = nullptr;
-	//	}
-	//}
+	~Array()
+	{
+		delete[] m_values;
+	}
 
 	void resize(int new_size)
 	{
@@ -54,7 +46,7 @@ public: // Methods
 		{
 			return;
 		}
-		T* new_values = new T[new_size]{};
+		T *new_values = new T[new_size]{};
 		int copy_size = (m_size < new_size) ? m_size : new_size;
 		for (int i = 0; i < copy_size; ++i)
 		{
@@ -70,21 +62,21 @@ public: // Methods
 		return m_size;
 	}
 
-	const char* type()
+	const char *type()
 	{
 		return m_type;
 	}
 
-	template<typename O>
+	template <typename O>
 	void populate(const O obj)
 	{
-		for (int i{ 0 }; i < m_size; i++)
+		for (int i{0}; i < m_size; i++)
 		{
 			this->m_values[i] = O(obj);
 		}
 	}
 
-	T& operator[](unsigned const int index)
+	T &operator[](unsigned const int index)
 	{
 		return m_values[index];
 	}
