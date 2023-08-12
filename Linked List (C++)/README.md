@@ -1,5 +1,5 @@
 A basic linked list template class.
-Provides appendage, inseretion and removal of values to the list.
+Provides appendage, insertion and removal of values to the list.
 Each entry is managed by a Node class which contains the value and a pointer member which is used to store the address of the next node in the list.
 The collection of nodes is managed by the LinkedList class.
 
