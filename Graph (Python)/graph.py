@@ -126,7 +126,7 @@ class Graph:
         return self._simple_adjacency_matrix
     
     @property
-    def M(self):
+    def M(self) -> list:
         """Updates and returns the simple adjacency matrix (same as self.adj)."""
         self._update_adj()
         return self._simple_adjacency_matrix
