@@ -222,6 +222,17 @@ class Graph:
         return self._is_complete
 
     @property
+    def is_wheel(self) -> bool:
+        """
+        Returns True if the graph is a wheel. (All edges have a degree of 3 \
+        except for one vertex which has a degree of v - 1)
+        """
+        self._is_wheel = False
+        if sorted(self.degree_sequence, reverse=True) == [self.vertex_count - 1] + [3 for v in range(self.vertex_count - 1)]:
+            self._is_wheel = True
+        return self._is_wheel
+
+    @property
     def isolated(self) -> list:
         """Returns a list of all isolated vertices."""
         return [vertex for vertex in self._vertices if vertex.is_isolated]
