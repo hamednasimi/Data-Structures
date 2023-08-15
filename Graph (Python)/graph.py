@@ -30,8 +30,6 @@ class Graph:
         self._vertex_count: int = len(vertices) if vertices else 0
         # The number of edges
         self._edge_count: int = 0
-        # The main string representation for str() and print()
-        self._representation: str = ""
         # The reverse sorted degree sequence
         self._degree_sequence: list = []
         # The radius of the graph
@@ -70,9 +68,15 @@ class Graph:
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
 
         # Miscellaneous
+        # The main string representation for str() and print()
+        self._representation: str = ""
+        # The highest index created in the graph. Saved so the vertex deletions won't mess up new vertices
         self._highest_vertex_index: int = self._vertex_count
+        # The removed vertices are saved here so any reference to them would not work
         self._removed_vertices: list = []
+        # The removed edges are saved here so any reference to them would not work
         self._removed_edges: list = []
+        # For use in representation
         self._highest_weight_len: int = 1
 
         # Initializations
@@ -120,18 +124,6 @@ class Graph:
         return self._edges
 
     @property
-    def adj(self) -> list:
-        """Updates and returns the simple adjacency matrix."""
-        self._update_adj()
-        return self._simple_adjacency_matrix
-    
-    @property
-    def M(self) -> list:
-        """Updates and returns the simple adjacency matrix (same as self.adj)."""
-        self._update_adj()
-        return self._simple_adjacency_matrix
-
-    @property
     def vertex_count(self) -> int:
         """Returns the number of vertices."""
         return self._vertex_count
@@ -149,123 +141,6 @@ class Graph:
             self._degree_sequence.append(self.deg(vertex))
         self._degree_sequence.sort(reverse=True)
         return self._degree_sequence
-
-    @property
-    def has_self_loop(self) -> bool:
-        """Whether the graph has at least one self loop."""
-        self._has_self_loop = False
-        for edge in self._edges:
-            if edge._is_self_loop:
-                self._has_self_loop = True
-                break
-        return self._has_self_loop
-
-    @property
-    def is_connected(self) -> bool:
-        """Whether the graph is connected (every vertex has a path to every other veretex)."""
-        self._is_connected = True
-        for i, row in enumerate(self.distance_matrix):
-            for distance in row:
-                if row.index(distance) != i and distance == 0:
-                    self._is_connected = False
-                    return self._is_connected
-        return self._is_connected
-
-    @property
-    def is_weighted(self) -> bool:
-        """Returns True if the graph is weighted (there are different weights than 1)."""
-        self._is_weighted = False
-        for edge in self._edges:
-            if edge.weight != 1:
-                self._is_weighted = True
-                break
-        return self._is_weighted
-
-    @property
-    def is_multigraph(self) -> bool:
-        """
-        Returns True if the graph is a multigraph.\
-        A multigraph has more than one edge between two vertices.
-        """
-        self._is_multigraph = False
-        for vertex in self._vertices:
-            vertex_list = []
-            for edge in vertex.edges:
-                if edge.vertices[0] != vertex:
-                    vertex_list.append(edge.vertices[0])
-                else:
-                    vertex_list.append(edge.vertices[1])
-            for v in vertex_list:
-                if vertex_list.count(v) > 1:
-                    self._is_multigraph = True
-                    break
-        return self._is_multigraph
-
-    @property
-    def is_simple(self) -> bool:
-        """
-        Returns True if the graph is simple.\
-        A simple graph is unweighted, has no self-loops and has no parallel edges.
-        """
-        self._is_simple = (not self.is_weighted) and (not self.has_self_loop) and (not self.is_multigraph)
-        return self._is_simple
-
-    @property
-    def is_complete(self) -> bool:
-        """Whether every vertex in the graph has at least one edge to every other vertex except for itself"""
-        self._is_complete = True
-        ds = self.degree_sequence
-        for i, vertex in enumerate(self._vertices):
-            if not (ds[i] == self._vertex_count - 1 and not self.loop(vertex)):
-                self._is_complete = False
-                break
-        return self._is_complete
-
-    @property
-    def is_wheel(self) -> bool:
-        """
-        Returns True if the graph is a wheel. (All edges have a degree of 3 \
-        except for one vertex which has a degree of v - 1)
-        """
-        self._is_wheel = False
-        if sorted(self.degree_sequence, reverse=True) == [self.vertex_count - 1] + [3 for v in range(self.vertex_count - 1)]:
-            self._is_wheel = True
-        return self._is_wheel
-
-    @property
-    def isolated(self) -> list:
-        """Returns a list of all isolated vertices."""
-        return [vertex for vertex in self._vertices if vertex.is_isolated]
-
-    @property
-    def has_isolated(self) -> bool:
-        """Returns True if the graph has at least one isolated vertex."""
-        self._has_isolated = False
-        if len(self.isolated) > 0:
-            self._has_isolated = True
-        return self._has_isolated
-
-    @property
-    def pendent(self) -> list:
-        """Returns a list of all pendent vertices."""
-        return [vertex for vertex in self._vertices if vertex.is_pendent]
-
-    @property
-    def has_pendent(self) -> bool:
-        """Returns True if the graph has at least one pendent vertex."""
-        self._has_pendent = False
-        if len(self.pendent) > 0:
-            self._has_pendent = True
-        return self._has_pendent
-
-    @property
-    def distance_matrix(self) -> list:
-        """Updates and returns the distance matrix."""
-        if self.is_simple:
-            for vertex in self._vertices:
-                for i, element in enumerate(self._simple_BFS(vertex)):
-                    self._distance_matrix[vertex.index][i] = element
-            return self._distance_matrix
 
     @property
     def radius(self) -> int:
@@ -308,6 +183,135 @@ class Graph:
         else:
             self._n = sum(self.degree_sequence)
             return self._n
+
+    @property
+    def is_simple(self) -> bool:
+        """
+        Returns True if the graph is simple.\
+        A simple graph is unweighted, has no self-loops and has no parallel edges.
+        """
+        self._is_simple = (not self.is_weighted) and (not self.has_self_loop) and (not self.is_multigraph)
+        return self._is_simple
+
+    @property
+    def is_weighted(self) -> bool:
+        """Returns True if the graph is weighted (there are different weights than 1)."""
+        self._is_weighted = False
+        for edge in self._edges:
+            if edge.weight != 1:
+                self._is_weighted = True
+                break
+        return self._is_weighted
+
+    @property
+    def is_complete(self) -> bool:
+        """Whether every vertex in the graph has at least one edge to every other vertex except for itself"""
+        self._is_complete = True
+        ds = self.degree_sequence
+        for i, vertex in enumerate(self._vertices):
+            if not (ds[i] == self._vertex_count - 1 and not self.loop(vertex)):
+                self._is_complete = False
+                break
+        return self._is_complete
+
+    @property
+    def has_pendent(self) -> bool:
+        """Returns True if the graph has at least one pendent vertex."""
+        self._has_pendent = False
+        if len(self.pendent) > 0:
+            self._has_pendent = True
+        return self._has_pendent
+
+    @property
+    def has_isolated(self) -> bool:
+        """Returns True if the graph has at least one isolated vertex."""
+        self._has_isolated = False
+        if len(self.isolated) > 0:
+            self._has_isolated = True
+        return self._has_isolated
+
+    @property
+    def is_multigraph(self) -> bool:
+        """
+        Returns True if the graph is a multigraph.\
+        A multigraph has more than one edge between two vertices.
+        """
+        self._is_multigraph = False
+        for vertex in self._vertices:
+            vertex_list = []
+            for edge in vertex.edges:
+                if edge.vertices[0] != vertex:
+                    vertex_list.append(edge.vertices[0])
+                else:
+                    vertex_list.append(edge.vertices[1])
+            for v in vertex_list:
+                if vertex_list.count(v) > 1:
+                    self._is_multigraph = True
+                    break
+        return self._is_multigraph
+
+    @property
+    def has_self_loop(self) -> bool:
+        """Whether the graph has at least one self loop."""
+        self._has_self_loop = False
+        for edge in self._edges:
+            if edge._is_self_loop:
+                self._has_self_loop = True
+                break
+        return self._has_self_loop
+
+    @property
+    def is_connected(self) -> bool:
+        """Whether the graph is connected (every vertex has a path to every other veretex)."""
+        self._is_connected = True
+        for i, row in enumerate(self.distance_matrix):
+            for distance in row:
+                if row.index(distance) != i and distance == 0:
+                    self._is_connected = False
+                    return self._is_connected
+        return self._is_connected
+
+    @property
+    def is_wheel(self) -> bool:
+        """
+        Returns True if the graph is a wheel. (All edges have a degree of 3 \
+        except for one vertex which has a degree of v - 1)
+        """
+        self._is_wheel = False
+        if sorted(self.degree_sequence, reverse=True) == [self.vertex_count - 1] + [3 for v in range(self.vertex_count - 1)]:
+            self._is_wheel = True
+        return self._is_wheel
+
+    @property
+    def adj(self) -> list:
+        """Updates and returns the simple adjacency matrix."""
+        self._update_adj()
+        return self._simple_adjacency_matrix
+
+    @property
+    def M(self) -> list:
+        """Updates and returns the simple adjacency matrix (same as self.adj)."""
+        self._update_adj()
+        return self._simple_adjacency_matrix
+
+    @property
+    def distance_matrix(self) -> list:
+        """Updates and returns the distance matrix."""
+        if self.is_simple:
+            for vertex in self._vertices:
+                for i, element in enumerate(self._simple_BFS(vertex)):
+                    self._distance_matrix[vertex.index][i] = element
+            return self._distance_matrix
+
+    @property
+    def isolated(self) -> list:
+        """Returns a list of all isolated vertices."""
+        return [vertex for vertex in self._vertices if vertex.is_isolated]
+
+    @property
+    def pendent(self) -> list:
+        """Returns a list of all pendent vertices."""
+        return [vertex for vertex in self._vertices if vertex.is_pendent]
 
     # Instance methods
 
