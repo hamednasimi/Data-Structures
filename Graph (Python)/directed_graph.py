@@ -16,7 +16,7 @@ class DirectedGraph(Graph):
 
         # Primary instance variables
         
-        self._degree_sequence: list = None
+        self._degree_sequence: list = []
         self._in_degree_sequence: list = []
         self._out_degree_sequence: list = []
 
@@ -43,7 +43,7 @@ class DirectedGraph(Graph):
         self._reset_highest_weight_len()
         return new_edge
 
-    def e(self, v1: int | object, v2: int | object):
+    def e(self, v1: int | object, v2: int | object = None) -> list | int:
         """Returns a list of all the edges connecting the two given vertices."""
         assert isinstance(v1, int) or isinstance(v1, Vertex),\
             "The vertex arguments must either be vertex indices or vertex objects."
@@ -69,6 +69,6 @@ class DirectedGraph(Graph):
         self._edges.remove(edge)
         del edge
 
-    def _update_adj(self, edge: object):
+    def _update_adj(self, edge: DirectedEdge = None) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
         self._simple_adjacency_matrix[edge[0].index][edge[1].index] += edge[2]

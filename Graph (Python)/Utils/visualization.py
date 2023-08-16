@@ -1,12 +1,12 @@
 from pyvis.network import Network
-from graph import Graph
+from ..graph import Graph
 
 
 class Visualization:
 
-    def __init__(self, graph: object, details: bool = True):
+    def __init__(self, graph: object):
         """Visualizes the graph."""
-        if graph == None:
+        if graph is None:
             raise RuntimeError("The graph parameter must be provided.")
         if isinstance(graph, Graph):
             directed = False

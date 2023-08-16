@@ -11,7 +11,7 @@ class Edge:
         assert isinstance(vertices[0], Vertex), "Vertex 1 must be an instance if Vertex."
         assert isinstance(vertices[1], Vertex), "Vertex 2 must be an instance if Vertex."
 
-        self.connected_to: tuple = sorted(vertices)
+        self.connected_to: tuple | list = sorted(vertices)
         self._is_directed: bool = False
         vertices[0].add_edge(self)
         vertices[1].add_edge(self)

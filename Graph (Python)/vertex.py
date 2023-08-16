@@ -1,4 +1,3 @@
-from edge import Edge
 from Utils.BFS_state import BFSState
 
 
@@ -17,7 +16,7 @@ class Vertex:
         self._edges_a: list = []
         self._in_edges_a: list = []
         self._out_edges_a: list = []
-        self._loop: bool = None
+        self._loop: bool = False
         self._directional_graph: bool = directional_graph
         self._BFS_state: BFSState = BFSState.UNSEEN
 
@@ -144,9 +143,8 @@ class Vertex:
         """
         Returns the degree of the vertex.\
         If the graph is directed returns a tuple containing the in and out degrees.\
-        If the graoh is not directed returns an int.\
+        If the graph is not directed returns an int.\
         """
-        deg = None
         if self._directional_graph:
             if count_self_loop:
                 deg = tuple([len(self._in_edges_a), len(self._out_edges_a)])
@@ -162,7 +160,6 @@ class Vertex:
 
     def weight_deg(self, count_self_loop: bool = True) -> tuple:
         """Returns the summed weight of all edges to the vertex."""
-        deg = None
         if self._directional_graph:
             if count_self_loop:
                 deg = tuple([sum([i.weight for i in self._in_edges_a]),

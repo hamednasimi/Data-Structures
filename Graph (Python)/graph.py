@@ -12,13 +12,13 @@ class Graph:
     def __init__(self, vertices: list = None, edges: list = None) -> None:
 
         if vertices:
-            assert isinstance(vertices, list),\
+            assert isinstance(vertices, list), \
                 "The vertices must be provided in a set."
         if vertices:
-            assert Graph.vertex_set_check(vertices),\
+            assert Graph.vertex_set_check(vertices), \
                 "The vertex set must consist of integers starting at 0 and incrementing in steps of 1."
         if edges:
-            assert isinstance(edges, list),\
+            assert isinstance(edges, list), \
                 "The edges must be provided in a list of tuples, each with 3 integers at most."
 
         # Primary instance variables
@@ -43,28 +43,28 @@ class Graph:
 
         # Secondary instance variables
         # Whether the graph is simple
-        self._is_simple: bool = None
+        self._is_simple: bool = False
         # Whether edges in the graph have weights other than 1 and 0 (updated by self.connect())
-        self._is_weighted: bool = None
+        self._is_weighted: bool = False
         # Whether every vertex in the graph has at least one edge to every other vertex other than to itself
-        self._is_complete: bool = None
+        self._is_complete: bool = False
         # Whether the graph has at least one pendent vertex
-        self._has_pendent: bool = None
+        self._has_pendent: bool = False
         # Whether the graph has at least one isolated vertex
-        self._has_isolated: bool = None
+        self._has_isolated: bool = False
         # Whether any two vertices have parallel edges
-        self._is_multigraph: bool = None
+        self._is_multigraph: bool = False
         # Whether the graph has at least one self-loop
-        self._has_self_loop: bool = None
-        # Whether the graph is connected (every vertex has a path to every other veretex)
-        self._is_connected: bool = None
+        self._has_self_loop: bool = False
+        # Whether the graph is connected (every vertex has a path to every other vertex)
+        self._is_connected: bool = False
         # Whether every vertex in the graph has a degree of 3 except for one that has the degree v - 1
-        self._is_wheel: bool = None
+        self._is_wheel: bool = False
 
         # Matrix representation attributes
-        self._simple_adjacency_matrix: list =\
+        self._simple_adjacency_matrix: list = \
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
-        self._distance_matrix: list =\
+        self._distance_matrix: list = \
             [[0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
 
         # Miscellaneous
@@ -81,11 +81,11 @@ class Graph:
 
         # Initializations
         # Create and add the vertex references
-        if vertices != None:
+        if vertices is not None:
             for v in vertices:
                 self._vertices.append(Vertex(v))
         # Create and add the edge references
-        if edges != None:
+        if edges is not None:
             for e in edges:
                 if len(e) == 2:  # No weight is given, defaults to 1
                     self.edge(e[0], e[1])
@@ -94,14 +94,14 @@ class Graph:
             self._reset_highest_weight_len()
 
     def __str__(self) -> str:
-        '''The main string representation for str() and print().'''
+        """The main string representation for str() and print()."""
         self._representation = ""
         for i in range(self._vertex_count):
             for j in range(self._vertex_count):
                 current_element = str(self._simple_adjacency_matrix[i][j])
                 self._representation += " " * (self._highest_weight_len - len(current_element)) + current_element
                 self._representation += " "
-            self._representation += ("\n") if i != self._vertex_count - 1 else ""
+            self._representation += "\n" if i != self._vertex_count - 1 else ""
         return str(self._representation)
 
     def __repr__(self) -> str:
@@ -255,14 +255,14 @@ class Graph:
         """Whether the graph has at least one self loop."""
         self._has_self_loop = False
         for edge in self._edges:
-            if edge._is_self_loop:
+            if edge.is_self_loop:
                 self._has_self_loop = True
                 break
         return self._has_self_loop
 
     @property
     def is_connected(self) -> bool:
-        """Whether the graph is connected (every vertex has a path to every other veretex)."""
+        """Whether the graph is connected (every vertex has a path to every other vertex)."""
         self._is_connected = True
         for i, row in enumerate(self.distance_matrix):
             for distance in row:
@@ -278,7 +278,8 @@ class Graph:
         except for one vertex which has a degree of v - 1)
         """
         self._is_wheel = False
-        if sorted(self.degree_sequence, reverse=True) == [self.vertex_count - 1] + [3 for v in range(self.vertex_count - 1)]:
+        if sorted(self.degree_sequence, reverse=True) == \
+                [self.vertex_count - 1] + [3 for _ in range(self.vertex_count - 1)]:
             self._is_wheel = True
         return self._is_wheel
 
@@ -299,7 +300,7 @@ class Graph:
         """Updates and returns the distance matrix."""
         if self.is_simple:
             for vertex in self._vertices:
-                for i, element in enumerate(self._simple_BFS(vertex)):
+                for i, element in enumerate(self._simple_bfs(vertex)):
                     self._distance_matrix[vertex.index][i] = element
             return self._distance_matrix
 
@@ -331,7 +332,7 @@ class Graph:
         self._vertex_count += 1
         return new_vertex
 
-    def v(self, index: int) -> object:
+    def v(self, index: int) -> Vertex | None:
         """
         Returns the vertex with the index if it exists. Else returns None.
         """
@@ -342,11 +343,11 @@ class Graph:
                 return v
         return None  # In case the vertex with the given index is not present
 
-    def remove_vertex(self, vertex: int | object) -> None:
+    def remove_vertex(self, vertex: int | Vertex) -> None:
         """
         Deletes the given vertex reference. Removes all the edges that are connected to it as well. \
-        Removing a verted does not shift the remaining vertices' index and adding new vertices \
-        afterwards will yield higher index values than the all time highest.\
+        Removing a vertex does not shift the remaining vertices' index and adding new vertices \
+        afterward will yield higher index values than the all-time highest.\
         The vertex will exist but inaccessible to the user.\
         It is not recommended to access and modify the removed vertex.
         """
@@ -373,9 +374,9 @@ class Graph:
 
     def edge(self, v1: int | object, v2: int | object, weight: int = 1) -> object:
         """Creates and returns an Edge object, connecting the two given vertices."""
-        assert isinstance(v1, int) or isinstance(v1, Vertex),\
+        assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
-        assert isinstance(v2, int) or isinstance(v2, Vertex),\
+        assert isinstance(v2, int) or isinstance(v2, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         if isinstance(v1, int):
             v1 = self.v(v1)
@@ -392,22 +393,23 @@ class Graph:
         self._reset_highest_weight_len()
         return new_edge
 
-    def e(self, v1: int | object, v2: int | object = None) -> list:
+    def e(self, v1: int | object, v2: int | object = None) -> list | int:
         """
         With only the v1 argument given, returns the eccentricity of the vertex.
         With both arguments, returns a list of all the edges connecting the two given vertices.
         """
-        if v2 == None:
+        if v2 is None:
             return self.eccentricity(v1)
-        assert isinstance(v1, int) or isinstance(v1, Vertex),\
+        assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
-        assert isinstance(v2, int) or isinstance(v2, Vertex),\
+        assert isinstance(v2, int) or isinstance(v2, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         if isinstance(v1, int):
             v1 = self.v(v1)
         if isinstance(v2, int):
             v2 = self.v(v2)
-        return [e for e in self._edges if e not in self._removed_edges and (e.vertices == [v1, v2] or e.vertices == [v2, v1])]
+        return [e for e in self._edges if
+                not (not (e not in self._removed_edges) or not (e.vertices == [v1, v2] or e.vertices == [v2, v1]))]
 
     def remove_edge(self, edge: object) -> None:
         """
@@ -416,7 +418,7 @@ class Graph:
         multiple edges connecting the two vertices with the same tuple notation \
         in which case the deletion procedure is ambiguous. 
         """
-        assert isinstance(edge, Edge),\
+        assert isinstance(edge, Edge), \
             "The edge argument must be an Edge instance reference."
         self._removed_edges.append(edge)
         self._edges.remove(edge)
@@ -428,19 +430,19 @@ class Graph:
         self._reset_highest_weight_len()
         del edge
 
-    def loop(self, vertex: int | object) -> bool:
+    def loop(self, vertex: int | Vertex) -> bool:
         """Returns True if the given vertex has at least one self-loop."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.loop
 
-    def deg(self, vertex: int | object, count_self_loop: bool = True) -> int:
+    def deg(self, vertex: int | Vertex, count_self_loop: bool = True) -> int:
         """Returns the degree of the given vertex."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.deg(count_self_loop)
 
-    def weight_deg(self, vertex: int | object, count_self_loop: bool = True) -> int:
+    def weight_deg(self, vertex: int | Vertex, count_self_loop: bool = True) -> int | tuple:
         """Returns the summed weight of all edges to the vertex."""
         if isinstance(vertex, int):
             vertex = self.v(vertex)
@@ -457,22 +459,22 @@ class Graph:
             destination = destination.index
         return self.distance_matrix[origin][destination]
 
-    def incident_on(self, vertex: int | object) -> list:
+    def incident_on(self, vertex: int | Vertex) -> list:
         """Returns every edge connected to the vertex."""
         if isinstance(vertex, int):
             return self.v(vertex).edges
         return vertex.edges
 
-    def eccentricity(self, vertex: object) -> int:
+    def eccentricity(self, vertex: int | object) -> int:
         """
         Returns the longest of shortest distances between the given vertex and all other vertices.
         """
         if isinstance(vertex, int):
             vertex = self.v(vertex)
-        return max(self._simple_BFS(vertex))
+        return max(self._simple_bfs(vertex))
 
-    def _simple_BFS(self, vertex: object) -> list:
-        """Returns a list of the distances from the given vertex too all other vertices."""
+    def _simple_bfs(self, vertex: Vertex) -> list:
+        """Returns a list of the distances from the given vertex to all other vertices."""
         from Utils.BFS_state import BFSState
         distance = [0 for _ in range(self._highest_vertex_index)]
         if vertex not in self._removed_vertices:
@@ -496,7 +498,7 @@ class Graph:
                 v._BFS_state = BFSState.UNSEEN
         return distance
 
-    def _update_adj(self) -> None:
+    def _update_adj(self, edge: Edge = None) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
         self._simple_adjacency_matrix: list = [
             [0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
@@ -512,14 +514,14 @@ class Graph:
         self._highest_weight_len = 1
         for row in self._simple_adjacency_matrix:
             for element in row:
-                l = len(str(element))
-                if l > self._highest_weight_len:
-                    self._highest_weight_len = l
+                length = len(str(element))
+                if length > self._highest_weight_len:
+                    self._highest_weight_len = length
 
     # Class / static methods
 
     @staticmethod
-    def vertex_set_check(a: set) -> bool:
+    def vertex_set_check(a: set | list) -> bool:
         """Returns True if the given set starts at 0 and is ascending by 1. Else returns False."""
         if a[0] != 0:
             return False
@@ -545,12 +547,12 @@ class Graph:
         Returns the maximum possible number of edges given the vertex count \
         assuming the graph is simple and complete.
         """
-        return Graph.n(vertex_count) // 2
+        return Graph.N(vertex_count) // 2
 
     @staticmethod
     def edge_subset(vertex_count: int) -> int:
         """
-        Returns the number of possible subsets of edges with a certain number of vertives \
+        Returns the number of possible subsets of edges with a certain number of vertices \
         assuming the graph is simple.
         """
         return 2 ** Graph.E(vertex_count)
