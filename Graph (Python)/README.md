@@ -1,4 +1,4 @@
-Currently supports the very basic functionalities and attributes of a graph.
+Currently, supports the very basic functionalities and attributes of a graph.
 It is very minimally tested. Just enough so that you can create objects and play around with them.
 
 Usage:

@@ -1,5 +1,5 @@
 class Stack:
-    """Provides the base functionalities of a the stack data structure."""
+    """Provides the base functionalities of the stack data structure."""
 
     # Dunder methods
 
@@ -27,7 +27,7 @@ class Stack:
 
     @property
     def size(self) -> int:
-        """Returns the size of the stack (starts at -1 meaning the stack is emptyand goes up to the length -1)"""
+        """Returns the size of the stack (starts at -1 meaning the stack is empty and goes up to the length -1)"""
         return self._size
 
     @property

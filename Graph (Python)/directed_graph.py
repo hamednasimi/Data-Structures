@@ -12,10 +12,10 @@ class DirectedGraph(Graph):
 
     def __init__(self, vertices: list = None, edges: list = None) -> None:
 
-        super().__init__(vertices, edges)
+        super().__init__(vertices=vertices, edges=edges)
 
         # Primary instance variables
-        
+
         self._degree_sequence: list = []
         self._in_degree_sequence: list = []
         self._out_degree_sequence: list = []
@@ -24,9 +24,9 @@ class DirectedGraph(Graph):
 
     def edge(self, v1: int | object, v2: int | object, weight: int = 1):
         """Creates and returns an Edge object, connecting the two given vertices."""
-        assert isinstance(v1, int) or isinstance(v1, Vertex),\
+        assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
-        assert isinstance(v2, int) or isinstance(v2, Vertex),\
+        assert isinstance(v2, int) or isinstance(v2, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         if isinstance(v1, int):
             v1 = self.v(v1)
@@ -43,11 +43,11 @@ class DirectedGraph(Graph):
         self._reset_highest_weight_len()
         return new_edge
 
-    def e(self, v1: int | object, v2: int | object = None) -> list | int:
+    def e(self, v1: int | Vertex, v2: int | Vertex = None) -> list | int:
         """Returns a list of all the edges connecting the two given vertices."""
-        assert isinstance(v1, int) or isinstance(v1, Vertex),\
+        assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
-        assert isinstance(v2, int) or isinstance(v2, Vertex),\
+        assert isinstance(v2, int) or isinstance(v2, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         if isinstance(v1, int):
             v1 = self.v(v1)

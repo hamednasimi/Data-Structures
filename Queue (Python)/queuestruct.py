@@ -1,4 +1,4 @@
-class Queue_:
+class QueueStruct:
     """Provides the basic functionalities of a queue data structure."""
 
     # Dunder methods

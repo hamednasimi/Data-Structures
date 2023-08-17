@@ -21,7 +21,6 @@ build/
 TestRunner/
 Matrix/
 /Matrix/Matrix.h
-/Matrix/Matrix.h
 Graph (Python)/Testing.py
 /Graph (Python)/old_graph.py
 /Graph (Python)/Testing.ipynb
