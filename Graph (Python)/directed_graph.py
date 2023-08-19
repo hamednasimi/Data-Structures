@@ -16,7 +16,7 @@ class DirectedGraph(Graph):
 
         # Primary instance variables
 
-        self._degree_sequence: list = [] # Not used in a directed graph
+        self._degree_sequence: list = []  # Not used in a directed graph
         self._in_degree_sequence: list = []
         self._out_degree_sequence: list = []
 
@@ -85,7 +85,7 @@ class DirectedGraph(Graph):
             return self.v(vertex).out_edges
         return vertex.out_edges
 
-    def incident_on(self):
+    def incident_on(self, vertex: Vertex | int):
         """Not Implemented."""
         raise NotImplementedError()
 
