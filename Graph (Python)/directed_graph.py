@@ -16,7 +16,7 @@ class DirectedGraph(Graph):
 
         # Primary instance variables
 
-        self._degree_sequence: list = []
+        self._degree_sequence: list = [] # Not used in a directed graph
         self._in_degree_sequence: list = []
         self._out_degree_sequence: list = []
 
@@ -72,3 +72,23 @@ class DirectedGraph(Graph):
     def _update_adj(self, edge: DirectedEdge = None) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
         self._simple_adjacency_matrix[edge[0].index][edge[1].index] += edge[2]
+
+    def incident_to(self, vertex: Vertex | int):
+        """Returns the edges that incident to the given vertex."""
+        if isinstance(vertex, int):
+            return self.v(vertex).in_edges
+        return vertex.in_edges
+
+    def incident_from(self, vertex: Vertex | int):
+        """Returns the edges that incident from the given vertex."""
+        if isinstance(vertex, int):
+            return self.v(vertex).out_edges
+        return vertex.out_edges
+
+    def incident_on(self):
+        """Not Implemented."""
+        raise NotImplementedError()
+
+    def _simple_bfs(self, vertex: Vertex) -> list:
+        """Not Implemented."""
+        raise NotImplementedError()
