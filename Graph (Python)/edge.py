@@ -52,7 +52,6 @@ class Edge:
     # Instance methods
 
     def is_connected_to(self, vertex: int | object) -> bool:
-        """Returns the vertices that the edge is connected to."""
         return vertex in self.connected_to
 
     # Class methods

@@ -62,11 +62,6 @@ class DirectedEdge(Edge):
     # Class methods
 
     @classmethod
-    def are_adjacent(cls, e1: object, e2: object) -> bool:
-        """Whether the two given edges are adjacent."""
-        return e1.leaves == e2.leaves or e1.to == e2.to
-
-    @classmethod
-    def are_parallel(cls, e1: object, e2: object) -> bool:
+    def are_parallel(cls, e1, e2) -> bool:
         """Whether the two given directed edges are parallel."""
         return e1.leaves == e2.leaves and e1.to == e2.to
