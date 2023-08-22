@@ -139,7 +139,7 @@ class Vertex:
         """Adds outgoing edge."""
         self._out_edges_a.append(edge)
 
-    def deg(self, count_self_loop: bool = True) -> int | tuple:
+    def deg(self, count_self_loop: bool = True) -> tuple | int:
         """
         Returns the degree of the vertex.\
         If the graph is directed returns a tuple containing the in and out degrees.\

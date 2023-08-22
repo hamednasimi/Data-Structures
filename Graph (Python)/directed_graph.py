@@ -79,6 +79,12 @@ class DirectedGraph(Graph):
             return self.v(vertex).in_edges
         return vertex.in_edges
 
+    def deg(self, vertex: int | Vertex, count_self_loop: bool = True) -> int:
+        """Returns the degree of the given vertex."""
+        if isinstance(vertex, int):
+            vertex = self.v(vertex)
+        return vertex.deg(count_self_loop)
+
     def incident_from(self, vertex: Vertex | int):
         """Returns the edges that incident from the given vertex."""
         if isinstance(vertex, int):
