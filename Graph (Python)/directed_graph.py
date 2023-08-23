@@ -85,13 +85,13 @@ class DirectedGraph(Graph):
             vertex = self.v(vertex)
         return vertex.deg(count_self_loop)
 
-    def incident_from(self, vertex: Vertex | int):
+    def incident_from(self, vertex: Vertex | int) -> list:
         """Returns the edges that incident from the given vertex."""
         if isinstance(vertex, int):
             return self.v(vertex).out_edges
         return vertex.out_edges
 
-    def incident_on(self, vertex: Vertex | int):
+    def incident_on(self, vertex: Vertex | int) -> None:
         """Not Implemented."""
         raise NotImplementedError()
 
