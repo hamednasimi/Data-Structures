@@ -22,7 +22,7 @@ class DirectedGraph(Graph):
 
     # Instance methods
 
-    def edge(self, v1: int | object, v2: int | object, weight: int = 1):
+    def edge(self, v1: int | object, v2: int | object, weight: int = 1) -> DirectedEdge:
         """Creates and returns an Edge object, connecting the two given vertices."""
         assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
@@ -55,7 +55,7 @@ class DirectedGraph(Graph):
             v2 = self.v(v2)
         return [e for e in self._edges if e.vertices == [v1, v2]]
 
-    def remove_edge(self, edge: object):
+    def remove_edge(self, edge: object) -> None:
         """
         Removes the given edge.
         The edge argument must be an Edge instance reference because there might be \
@@ -73,7 +73,7 @@ class DirectedGraph(Graph):
         """Updates self._simple_adjacency_matrix with the new edge value."""
         self._simple_adjacency_matrix[edge[0].index][edge[1].index] += edge[2]
 
-    def incident_to(self, vertex: Vertex | int):
+    def incident_to(self, vertex: Vertex | int) -> list:
         """Returns the edges that incident to the given vertex."""
         if isinstance(vertex, int):
             return self.v(vertex).in_edges
