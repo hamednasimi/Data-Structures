@@ -95,6 +95,10 @@ class DirectedGraph(Graph):
         """Not Implemented."""
         raise NotImplementedError()
 
-    def _simple_bfs(self, vertex: Vertex) -> list:
+    def _simple_bfs(self, vertex: Vertex) -> None:
+        """Not Implemented."""
+        raise NotImplementedError()
+
+    def eccentricity(self, vertex: int | object) -> None:
         """Not Implemented."""
         raise NotImplementedError()
