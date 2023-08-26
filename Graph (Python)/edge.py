@@ -22,12 +22,18 @@ class Edge:
         self.incident_on = self.connected_to
 
     def __str__(self) -> str:
+        """Returns the string representation of the edge object."""
         return f"({self.connected_to[0]}, {self.connected_to[1]}, {self._weight})"
 
     def __repr__(self) -> str:
+        """Returns the representation of the edge object."""
         return self.__str__()
 
     def __del__(self) -> None:
+        """
+        Deletes the edge object.\
+        The edge and vertex connection information deletion gets handled by the graph class.
+        """
         self._weight = None
 
     # Properties
