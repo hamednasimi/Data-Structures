@@ -1,5 +1,5 @@
-from vertex import Vertex
 from edge import Edge
+from vertex import Vertex
 
 
 class Graph:
@@ -89,8 +89,11 @@ class Graph:
             for e in edges:
                 if len(e) == 2:  # No weight is given, defaults to 1
                     self.edge(e[0], e[1])
-                if len(e) == 3:  # The weight is provided
+                elif len(e) == 3:  # The weight is provided
                     self.edge(e[0], e[1], e[2])
+                else:
+                    raise KeyError(
+                        "The given edge must be provided as a tuple of 2 or 3 values e.g. (vertex, vertex[, weight])")
             self._reset_highest_weight_len()
 
     def __str__(self) -> str:

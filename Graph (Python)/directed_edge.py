@@ -1,4 +1,4 @@
-from .edge import Edge
+from edge import Edge
 
 
 class DirectedEdge(Edge):
@@ -20,12 +20,14 @@ class DirectedEdge(Edge):
         vertices[1].add_edge(self)
 
     def __str__(self) -> str:
-        return f"({self._leaves}, {self.connected_to[1]}, {self._weight})"
+        return f"({self._leaves}, {self._to}, {self._weight})"
 
-    def __getitem__(self, key) -> object | int | float:
+    def __getitem__(self, key: int) -> object | int | float:
         """In a directed graph, returns the origin [0], destination [1] or weight [2] vertex."""
-        if key in [0, 1]:
-            return self.vertices[key]
+        if key == 0:
+            return self._leaves
+        elif key == 1:
+            return self._to
         elif key == 2:
             return self._weight
         else:
@@ -38,6 +40,11 @@ class DirectedEdge(Edge):
         self._to = None
 
     # Properties
+
+    @property
+    def vertices(self) -> list:
+        """Returns a tuple of the vertex objects that the edge is connected to."""
+        return self._connected_to
 
     @property
     def leaves(self) -> object:

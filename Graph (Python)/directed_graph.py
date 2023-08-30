@@ -1,4 +1,4 @@
-from .graph import Graph
+from graph import Graph
 from vertex import Vertex
 from directed_edge import DirectedEdge
 
