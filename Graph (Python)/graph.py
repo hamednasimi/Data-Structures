@@ -501,7 +501,7 @@ class Graph:
                 v._BFS_state = BFSState.UNSEEN
         return distance
 
-    def _update_adj(self, edge: Edge = None) -> None:
+    def _update_adj(self) -> None:
         """Updates self._simple_adjacency_matrix with the new edge value."""
         self._simple_adjacency_matrix: list = [
             [0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]

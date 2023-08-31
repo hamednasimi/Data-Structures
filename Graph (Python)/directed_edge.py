@@ -34,8 +34,6 @@ class DirectedEdge(Edge):
             raise KeyError("The provided key must either be origin [0], destination [1] or weight [2].")
 
     def __del__(self) -> None:
-        # TODO self._leaves.delete_edge(self) using the directed_graph's remove_edge method instead
-        # TODO self._to.delete_edge(self) using the directed_graph's remove_edge method instead
         self._leaves = None
         self._to = None
 
@@ -46,15 +44,30 @@ class DirectedEdge(Edge):
         """Returns a tuple of the vertex objects that the edge is connected to."""
         return self._connected_to
 
+    @vertices.setter
+    def vertices(self, value: object | None) -> None:
+        """Setter for self._connected_to attribute."""
+        self._connected_to = value
+
     @property
     def leaves(self) -> object:
         """Returns the vertex object that the edge is incident from/leaves."""
         return self._leaves
 
+    @leaves.setter
+    def leaves(self, value: object | None) -> None:
+        """Setter for self._leaves attribute."""
+        self._leaves = value
+
     @property
     def to(self) -> object:
         """Returns the vertex object that the edge is incident to/enters."""
         return self._to
+
+    @to.setter
+    def to(self, value: object | None) -> None:
+        """Setter for self._to attribute."""
+        self._to = value
 
     # Instance methods
 

@@ -15,10 +15,21 @@ class DirectedGraph(Graph):
         super().__init__(vertices=vertices, edges=edges)
 
         # Primary instance variables
-
+        # Replacement for the Graph degree_sequence
         self._degree_sequence: list = []  # Not used in a directed graph
         self._in_degree_sequence: list = []
         self._out_degree_sequence: list = []
+
+        # Secondary instance variables
+        # Whether the graph is simple
+        self._is_simple: bool = False
+
+    # Properties
+    
+    @property
+    def is_simple(self) -> bool:
+        """Always returns False. A directed graph can't be simple."""
+        return False
 
     # Instance methods
 
@@ -39,7 +50,7 @@ class DirectedGraph(Graph):
         new_edge = DirectedEdge(vertices=tuple([v1, v2]), weight=weight)
         self._edges.append(new_edge)
         self._edge_count += 1
-        self._update_adj(new_edge)
+        self._update_adj()
         self._reset_highest_weight_len()
         return new_edge
 
@@ -63,15 +74,17 @@ class DirectedGraph(Graph):
         in which case the deletion procedure is ambiguous. 
         """
         assert isinstance(edge, DirectedEdge), "The edge argument must be an Edge instance reference."
-        self._simple_adjacency_matrix[edge.vertices[0].index][edge.vertices[1].index] -= edge.weight
-        for vertex in edge.vertices:
-            vertex.remove_edge(edge)
+        self._removed_edges.append(edge)
         self._edges.remove(edge)
+        self._edge_count -= 1
+        for vertex in edge.vertices:
+            vertex.edges.remove(edge)
+        edge.vertices = None
+        edge.leaves = None
+        edge.to = None
+        self._update_adj()
+        self._reset_highest_weight_len()
         del edge
-
-    def _update_adj(self, edge: DirectedEdge = None) -> None:
-        """Updates self._simple_adjacency_matrix with the new edge value."""
-        self._simple_adjacency_matrix[edge[0].index][edge[1].index] += edge[2]
 
     def incident_to(self, vertex: Vertex | int) -> list:
         """Returns the edges that incident to the given vertex."""
