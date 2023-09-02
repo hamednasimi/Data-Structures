@@ -97,7 +97,9 @@ class Graph:
             self._reset_highest_weight_len()
 
     def __str__(self) -> str:
-        """The main string representation for str() and print()."""
+        """
+        The main string representation for str() and print().
+        """
         self._representation = ""
         for i in range(self._vertex_count):
             for j in range(self._vertex_count):
@@ -111,34 +113,46 @@ class Graph:
         return self.__str__()
 
     def __getitem__(self, index: int) -> list:
-        """Returns the vertex with the given index."""
+        """
+        Returns the vertex with the given index.
+        """
         return self._vertices[index]
 
     # Properties
 
     @property
     def vertices(self) -> list:
-        """Returns a list of all vertices in the graph"""
+        """
+        Returns a list of all vertices in the graph.
+        """
         return self._vertices
 
     @property
     def edges(self) -> list:
-        """Returns a list of all edges in the graph"""
+        """
+        Returns a list of all edges in the graph.
+        """
         return self._edges
 
     @property
     def vertex_count(self) -> int:
-        """Returns the number of vertices."""
+        """
+        Returns the number of vertices.
+        """
         return self._vertex_count
 
     @property
     def edge_count(self) -> int:
-        """Returns the number of vertices."""
+        """
+        Returns the number of vertices.
+        """
         return self._edge_count
 
     @property
     def degree_sequence(self) -> list:
-        """Updates and returns the degree sequence of the graph."""
+        """
+        Updates and returns the degree sequence of the graph.
+        """
         self._degree_sequence = []
         for vertex in self._vertices:
             self._degree_sequence.append(self.deg(vertex))
@@ -147,7 +161,9 @@ class Graph:
 
     @property
     def radius(self) -> int:
-        """Returns the radius of the graph."""
+        """
+        Returns the radius of the graph.
+        """
         e = []
         for vertex in self._vertices:
             e.append(self.eccentricity(vertex))
@@ -156,12 +172,16 @@ class Graph:
 
     @property
     def r(self) -> int:
-        """Alias for the radius property."""
+        """
+        Alias for the radius property.
+        """
         return self.radius
 
     @property
     def diameter(self) -> int:
-        """Returns the diameter of the graph."""
+        """
+        Returns the diameter of the graph.
+        """
         e = []
         for vertex in self._vertices:
             e.append(self.eccentricity(vertex))
@@ -179,7 +199,9 @@ class Graph:
 
     @property
     def n(self) -> int:
-        """Returns the sum of the degrees of all vertices."""
+        """
+        Returns the sum of the degrees of all vertices.
+        """
         if self._is_complete:
             self._n = self._vertex_count * (self._vertex_count - 1)
             return self._n
@@ -198,7 +220,9 @@ class Graph:
 
     @property
     def is_weighted(self) -> bool:
-        """Returns True if the graph is weighted (there are different weights than 1)."""
+        """
+        Returns True if the graph is weighted (there are different weights than 1).
+        """
         self._is_weighted = False
         for edge in self._edges:
             if edge.weight != 1:
@@ -208,7 +232,9 @@ class Graph:
 
     @property
     def is_complete(self) -> bool:
-        """Whether every vertex in the graph has at least one edge to every other vertex except for itself"""
+        """
+        Whether every vertex in the graph has at least one edge to every other vertex except for itself.
+        """
         self._is_complete = True
         ds = self.degree_sequence
         for i, vertex in enumerate(self._vertices):
@@ -219,7 +245,9 @@ class Graph:
 
     @property
     def has_pendent(self) -> bool:
-        """Returns True if the graph has at least one pendent vertex."""
+        """
+        Returns True if the graph has at least one pendent vertex.
+        """
         self._has_pendent = False
         if len(self.pendent) > 0:
             self._has_pendent = True
@@ -227,7 +255,9 @@ class Graph:
 
     @property
     def has_isolated(self) -> bool:
-        """Returns True if the graph has at least one isolated vertex."""
+        """
+        Returns True if the graph has at least one isolated vertex.
+        """
         self._has_isolated = False
         if len(self.isolated) > 0:
             self._has_isolated = True
@@ -255,7 +285,9 @@ class Graph:
 
     @property
     def has_self_loop(self) -> bool:
-        """Whether the graph has at least one self loop."""
+        """
+        Whether the graph has at least one self loop.
+        """
         self._has_self_loop = False
         for edge in self._edges:
             if edge.is_self_loop:
@@ -265,7 +297,9 @@ class Graph:
 
     @property
     def is_connected(self) -> bool:
-        """Whether the graph is connected (every vertex has a path to every other vertex)."""
+        """
+        Whether the graph is connected (every vertex has a path to every other vertex).
+        """
         self._is_connected = True
         for i, row in enumerate(self.distance_matrix):
             for distance in row:
@@ -288,19 +322,25 @@ class Graph:
 
     @property
     def adj(self) -> list:
-        """Updates and returns the simple adjacency matrix."""
+        """
+        Updates and returns the simple adjacency matrix.
+        """
         self._update_adj()
         return self._simple_adjacency_matrix
 
     @property
     def M(self) -> list:
-        """Updates and returns the simple adjacency matrix (same as self.adj)."""
+        """
+        Updates and returns the simple adjacency matrix (same as self.adj).
+        """
         self._update_adj()
         return self._simple_adjacency_matrix
 
     @property
     def distance_matrix(self) -> list:
-        """Updates and returns the distance matrix."""
+        """
+        Updates and returns the distance matrix.
+        """
         if self.is_simple:
             for vertex in self._vertices:
                 for i, element in enumerate(self._simple_bfs(vertex)):
@@ -309,12 +349,16 @@ class Graph:
 
     @property
     def isolated(self) -> list:
-        """Returns a list of all isolated vertices."""
+        """
+        Returns a list of all isolated vertices.
+        """
         return [vertex for vertex in self._vertices if vertex.is_isolated]
 
     @property
     def pendent(self) -> list:
-        """Returns a list of all pendent vertices."""
+        """
+        Returns a list of all pendent vertices.
+        """
         return [vertex for vertex in self._vertices if vertex.is_pendent]
 
     # Instance methods
@@ -376,7 +420,9 @@ class Graph:
             raise KeyError("The given vertex does not exist or is already removed.")
 
     def edge(self, v1: int | object, v2: int | object, weight: int = 1) -> object:
-        """Creates and returns an Edge object, connecting the two given vertices."""
+        """
+        Creates and returns an Edge object, connecting the two given vertices.
+        """
         assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex), \
@@ -434,19 +480,25 @@ class Graph:
         del edge
 
     def loop(self, vertex: int | Vertex) -> bool:
-        """Returns True if the given vertex has at least one self-loop."""
+        """
+        Returns True if the given vertex has at least one self-loop.
+        """
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.loop
 
     def deg(self, vertex: int | Vertex, count_self_loop: bool = True) -> int:
-        """Returns the degree of the given vertex."""
+        """
+        Returns the degree of the given vertex.
+        """
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.deg(count_self_loop)
 
     def weight_deg(self, vertex: int | Vertex, count_self_loop: bool = True) -> int | tuple:
-        """Returns the summed weight of all edges to the vertex."""
+        """
+        Returns the summed weight of all edges to the vertex.
+        """
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.weight_deg(count_self_loop)
@@ -463,7 +515,9 @@ class Graph:
         return self.distance_matrix[origin][destination]
 
     def incident_on(self, vertex: int | Vertex) -> list:
-        """Returns every edge connected to the vertex."""
+        """
+        Returns every edge connected to the vertex.
+        """
         if isinstance(vertex, int):
             return self.v(vertex).edges
         return vertex.edges
@@ -477,7 +531,9 @@ class Graph:
         return max(self._simple_bfs(vertex))
 
     def _simple_bfs(self, vertex: Vertex) -> list:
-        """Returns a list of the distances from the given vertex to all other vertices."""
+        """
+        Returns a list of the distances from the given vertex to all other vertices.
+        """
         from Utils.BFS_state import BFSState
         distance = [0 for _ in range(self._highest_vertex_index)]
         if vertex not in self._removed_vertices:
@@ -502,7 +558,9 @@ class Graph:
         return distance
 
     def _update_adj(self) -> None:
-        """Updates self._simple_adjacency_matrix with the new edge value."""
+        """
+        Updates self._simple_adjacency_matrix with the new edge value.
+        """
         self._simple_adjacency_matrix: list = [
             [0 for _ in range(self._vertex_count)] for _ in range(self._vertex_count)]
         for edge in self._edges:
@@ -513,7 +571,9 @@ class Graph:
             self._simple_adjacency_matrix[i2][i1] += edge.weight
 
     def _reset_highest_weight_len(self) -> None:
-        """Resets the highest weight length for the string representation of the adjacency matrix."""
+        """
+        Resets the highest weight length for the string representation of the adjacency matrix.
+        """
         self._highest_weight_len = 1
         for row in self._simple_adjacency_matrix:
             for element in row:
@@ -525,7 +585,9 @@ class Graph:
 
     @staticmethod
     def vertex_set_check(a: set | list) -> bool:
-        """Returns True if the given set starts at 0 and is ascending by 1. Else returns False."""
+        """
+        Returns True if the given set starts at 0 and is ascending by 1. Else returns False.
+        """
         if a[0] != 0:
             return False
         check = True
@@ -541,7 +603,9 @@ class Graph:
 
     @staticmethod
     def N(vertex_count) -> int:
-        """Returns the sum of the degrees of a complete graph given the vertex count."""
+        """
+        Returns the sum of the degrees of a complete graph given the vertex count.
+        """
         return vertex_count * (vertex_count - 1)
 
     @staticmethod

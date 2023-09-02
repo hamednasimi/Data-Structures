@@ -28,13 +28,17 @@ class DirectedGraph(Graph):
     
     @property
     def is_simple(self) -> bool:
-        """Always returns False. A directed graph can't be simple."""
+        """
+        Always returns False. A directed graph can't be simple.
+        """
         return False
 
     # Instance methods
 
     def edge(self, v1: int | object, v2: int | object, weight: int = 1) -> DirectedEdge:
-        """Creates and returns an Edge object, connecting the two given vertices."""
+        """
+        Creates and returns an Edge object, connecting the two given vertices.
+        """
         assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex), \
@@ -55,7 +59,9 @@ class DirectedGraph(Graph):
         return new_edge
 
     def e(self, v1: int | Vertex, v2: int | Vertex = None) -> list | int:
-        """Returns a list of all the edges connecting the two given vertices."""
+        """
+        Returns a list of all the edges connecting the two given vertices.
+        """
         assert isinstance(v1, int) or isinstance(v1, Vertex), \
             "The vertex arguments must either be vertex indices or vertex objects."
         assert isinstance(v2, int) or isinstance(v2, Vertex), \
@@ -87,31 +93,43 @@ class DirectedGraph(Graph):
         del edge
 
     def incident_to(self, vertex: Vertex | int) -> list:
-        """Returns the edges that incident to the given vertex."""
+        """
+        Returns the edges that incident to the given vertex.
+        """
         if isinstance(vertex, int):
             return self.v(vertex).in_edges
         return vertex.in_edges
 
     def deg(self, vertex: int | Vertex, count_self_loop: bool = True) -> int:
-        """Returns the degree of the given vertex."""
+        """
+        Returns the degree of the given vertex.
+        """
         if isinstance(vertex, int):
             vertex = self.v(vertex)
         return vertex.deg(count_self_loop)
 
     def incident_from(self, vertex: Vertex | int) -> list:
-        """Returns the edges that incident from the given vertex."""
+        """
+        Returns the edges that incident from the given vertex.
+        """
         if isinstance(vertex, int):
             return self.v(vertex).out_edges
         return vertex.out_edges
 
     def incident_on(self, vertex: Vertex | int) -> None:
-        """Not Implemented."""
+        """
+        Not Implemented.
+        """
         raise NotImplementedError()
 
     def _simple_bfs(self, vertex: Vertex) -> None:
-        """Not Implemented."""
+        """
+        Not Implemented.
+        """
         raise NotImplementedError()
 
     def eccentricity(self, vertex: int | object) -> None:
-        """Not Implemented."""
+        """
+        Not Implemented.
+        """
         raise NotImplementedError()

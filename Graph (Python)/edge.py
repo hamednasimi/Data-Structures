@@ -1,5 +1,7 @@
 class Edge:
-    """Represents an undirected edge in a graph."""
+    """
+    Represents an undirected edge in a graph.
+    """
 
     # Dunder methods
 
@@ -22,11 +24,15 @@ class Edge:
         self.incident_on = self.connected_to
 
     def __str__(self) -> str:
-        """Returns the string representation of the edge object."""
+        """
+        Returns the string representation of the edge object.
+        """
         return f"({self.connected_to[0]}, {self.connected_to[1]}, {self._weight})"
 
     def __repr__(self) -> str:
-        """Returns the representation of the edge object."""
+        """
+        Returns the representation of the edge object.
+        """
         return self.__str__()
 
     def __del__(self) -> None:
@@ -40,17 +46,23 @@ class Edge:
 
     @property
     def vertices(self) -> list:
-        """Returns a tuple of the vertex objects that the edge is connected to."""
+        """
+        Returns a tuple of the vertex objects that the edge is connected to.
+        """
         return self.connected_to
 
     @property
     def weight(self) -> int | float:
-        """Returns the weight of the edge."""
+        """
+        Returns the weight of the edge.
+        """
         return self._weight
 
     @property
     def is_self_loop(self) -> bool:
-        """Returns True if the edge is a self-loop."""
+        """
+        Returns True if the edge is a self-loop.
+        """
         return self._is_self_loop
 
     loop = is_self_loop
@@ -64,10 +76,14 @@ class Edge:
 
     @classmethod
     def are_adjacent(cls, e1: object, e2: object) -> bool:
-        """Whether the two given edges are adjacent."""
+        """
+        Whether the two given edges are adjacent.
+        """
         return e1.vertices[0] in e2.vertices or e1.vertices
 
     @classmethod
     def are_parallel(cls, e1: object, e2: object) -> bool:
-        """Whether the two given undirected edges are parallel."""
+        """
+        Whether the two given undirected edges are parallel.
+        """
         return e1.vertices == e2.vertices
