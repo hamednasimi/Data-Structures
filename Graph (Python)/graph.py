@@ -271,6 +271,8 @@ class Graph:
         """
         self._is_multigraph = False
         for vertex in self._vertices:
+            if vertex.edges == []:
+                continue
             vertex_list = []
             for edge in vertex.edges:
                 if edge.vertices[0] != vertex:
