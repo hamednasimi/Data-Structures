@@ -4,20 +4,23 @@ template <typename T>
 class Array
 {
 private: // Member variables
+
 	int m_size{0};
 	T *m_values{nullptr};
 	int m_sum{0};
 	const char *m_type;
 
 public: // Methods
-	// Default constructor
+
 	Array()
+	// Default constructor
 	{
 		this->m_values = nullptr;
 		this->m_type = typeid(*this).name();
 	}
 
 	Array(int size)
+	// Given a size
 	{
 		this->m_size = size;
 		this->m_values = new T[m_size]{};
@@ -25,6 +28,7 @@ public: // Methods
 	}
 
 	Array(const Array &array)
+	// Copy constructor
 	{
 		this->m_size = array.m_size;
 		this->m_values = new T[m_size]; // allocate new array
@@ -36,6 +40,7 @@ public: // Methods
 	}
 
 	~Array()
+	// Destructor
 	{
 		delete[] m_values;
 	}
